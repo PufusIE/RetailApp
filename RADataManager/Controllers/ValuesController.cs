@@ -14,6 +14,7 @@ namespace RADataManager.Controllers
         // GET api/values
         public IEnumerable<string> Get()
         {
+            //getts the user id based upon who is logged in
             string userId = RequestContext.Principal.Identity.GetUserId();
 
             return new string[] { "value1", "value2", userId };
