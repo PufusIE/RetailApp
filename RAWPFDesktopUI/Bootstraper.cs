@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using RAWPFDesktopUI.Helpers;
 using RAWPFDesktopUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace RAWPFDesktopUI
 {
@@ -16,6 +18,12 @@ namespace RAWPFDesktopUI
         public Bootstraper()
         {
             Initialize();
+
+            //fix for passwordbox
+            ConventionManager.AddElementConvention<PasswordBox>(
+            PasswordBoxHelper.BoundPasswordProperty,
+            "Password",
+            "PasswordChanged");
         }
 
         //dependency injection
