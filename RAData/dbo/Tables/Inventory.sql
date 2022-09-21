@@ -4,5 +4,5 @@
     [ProductId] INT NOT NULL, 
     [Quantity] INT NOT NULL DEFAULT 1, 
     [PurchasePrice] MONEY NOT NULL, 
-    [PurchaseDate] MONEY NOT NULL DEFAULT getutctime()
+    [PurchaseDate] DATETIME2 NOT NULL DEFAULT getutcdate()
 )
