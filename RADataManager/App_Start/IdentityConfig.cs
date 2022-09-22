@@ -28,7 +28,7 @@ namespace RADataManager
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 10,
+                RequiredLength = 8,
                 RequireDigit = true,
                 RequireLowercase = true,
                 RequireUppercase = true,

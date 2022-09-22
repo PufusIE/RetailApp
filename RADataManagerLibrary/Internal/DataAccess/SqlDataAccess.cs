@@ -31,7 +31,7 @@ namespace RADataManagerLibrary.Internal.DataAccess
         }
 
         //writes to database
-        public void LoadData<T>(string storedProcedure, T parameters, string connectionStringName)
+        public void SaveData<T>(string storedProcedure, T parameters, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
 

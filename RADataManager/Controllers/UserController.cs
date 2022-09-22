@@ -13,13 +13,15 @@ namespace RADataManager.Controllers
 {
     [Authorize]
     public class UserController : ApiController
-    {        
-        public List<UserModel> GetById()
+    {
+        [HttpGet] // GET /api/User
+        public UserModel GetById()
         {
             UserData data = new UserData();
+            // Gets user id by bearer token
             string userId = RequestContext.Principal.Identity.GetUserId();
 
-            return data.GetUserById(userId);
+            return data.GetUserById(userId).First();
         }
     }
 }

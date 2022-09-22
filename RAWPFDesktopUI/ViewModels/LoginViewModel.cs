@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
 using RAWPFDesktopUI.Helpers;
+using RAWPFDesktopUILibrary.Api;
+using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +13,18 @@ namespace RAWPFDesktopUI.ViewModels
     public class LoginViewModel : Screen
     {
 		private readonly IAPIHelper _apiHelper;
+		private readonly ILoggedInUser _loggedInUser;
 		private string _username;
 		private string _password;
         private string _errorMessage;
 
-        public LoginViewModel(IAPIHelper apiHelper)
+		public LoginViewModel(IAPIHelper apiHelper, ILoggedInUser loggedInUser)
 		{
 			_apiHelper = apiHelper;
+			_loggedInUser = loggedInUser;
 		}
 
+		//Username textbox
         public string Username
 		{
 			get { return _username; }
@@ -31,6 +36,7 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
+		//Password textbox
 		public string Password
 		{
 			get { return _password; }
@@ -42,6 +48,7 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
+		//Error visability conditions
 		public bool IsErrorVisible
         {
 			get 
@@ -55,6 +62,7 @@ namespace RAWPFDesktopUI.ViewModels
 			}
 		}
 
+		//Error message
 		public string ErrorMessage
 		{
 			get { return _errorMessage; }
@@ -66,6 +74,7 @@ namespace RAWPFDesktopUI.ViewModels
             }
 		}
 
+		//Log In button visability conditions
 		public bool CanLogIn
 		{
 			get
@@ -80,12 +89,17 @@ namespace RAWPFDesktopUI.ViewModels
 			}
 		}
 
+		//Log In button
 		public async Task LogIn()
 		{
 			try
 			{
 				ErrorMessage = "";
+				// Calling /Token endpoint
 				var result = await _apiHelper.Authenticate(Username, Password);
+
+				// Calling api/user endpoint
+				await _apiHelper.GetLoggedInUserInfo(result.Access_Token);				
 			}
 			catch (Exception ex)
 			{

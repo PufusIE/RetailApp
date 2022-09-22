@@ -16,32 +16,18 @@ namespace RADataManagerLibrary.DataAccess
         //gets user by GUID id
         public List<UserModel> GetUserById(string Id)
         {
-            UserData sql = new UserData();
-
+            SqlDataAccess sql = new SqlDataAccess();
             var p = new { Id };
 
-            var output = sql.LoadData1<UserModel, dynamic>("dbo.spUserLookup", p, "RAData");
+            var output = sql.LoadData<UserModel, dynamic>("dbo.spUserLookup", p, "RAData");
 
             return output;
         }
 
         //getting connection string from web.config
-        public string GetConnectionString(string name)
+        private string GetConnectionString(string name)
         {
             return ConfigurationManager.ConnectionStrings[name].ConnectionString;
-        }
-
-        //loads data from database
-        public List<T> LoadData1<T, U>(string storedProcedure, U parameters, string connectionStringName)
-        {
-            string connectionString = GetConnectionString(connectionStringName);
-
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                List<T> rows = connection.Query<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure).ToList();
-
-                return rows;
-            }
         }
     }
 }

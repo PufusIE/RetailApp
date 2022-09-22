@@ -1,6 +1,8 @@
 ﻿using Caliburn.Micro;
 using RAWPFDesktopUI.Helpers;
 using RAWPFDesktopUI.ViewModels;
+using RAWPFDesktopUILibrary.Api;
+using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,7 @@ namespace RAWPFDesktopUI
 {
     internal class Bootstraper : BootstrapperBase
     {
+        // DI container
         private SimpleContainer _container = new SimpleContainer();
         public Bootstraper()
         {
@@ -34,7 +37,8 @@ namespace RAWPFDesktopUI
             _container
                  .Singleton<IWindowManager, WindowManager>()
                  .Singleton<IEventAggregator, EventAggregator>()
-                 .Singleton<IAPIHelper, APIHelper>();
+                 .Singleton<IAPIHelper, APIHelper>()
+                 .Singleton<ILoggedInUser, LoggedInUser>();
 
             //reflection
             GetType().Assembly.GetTypes()

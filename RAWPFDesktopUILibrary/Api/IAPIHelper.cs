@@ -1,10 +1,11 @@
-﻿using RAWPFDesktopUI.Models;
+﻿using RAWPFDesktopUILibrary.Models;
 using System.Threading.Tasks;
 
-namespace RAWPFDesktopUI.Helpers
+namespace RAWPFDesktopUILibrary.Api
 {
     public interface IAPIHelper
     {
         Task<AuthenticatedUser> Authenticate(string username, string password);
+        Task GetLoggedInUserInfo(string token);
     }
 }

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RAWPFDesktopUI", "RAWPFDesk
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RADataManagerLibrary", "RADataManagerLibrary\RADataManagerLibrary.csproj", "{7A1D06F2-FA46-45DF-9009-45FF99FA747C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RAWPFDesktopUILibrary", "RAWPFDesktopUILibrary\RAWPFDesktopUILibrary.csproj", "{F1E8D63C-731E-4658-9474-E20B43E14C2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{7A1D06F2-FA46-45DF-9009-45FF99FA747C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A1D06F2-FA46-45DF-9009-45FF99FA747C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A1D06F2-FA46-45DF-9009-45FF99FA747C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1E8D63C-731E-4658-9474-E20B43E14C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1E8D63C-731E-4658-9474-E20B43E14C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1E8D63C-731E-4658-9474-E20B43E14C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1E8D63C-731E-4658-9474-E20B43E14C2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
