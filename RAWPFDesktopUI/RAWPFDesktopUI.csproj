@@ -85,6 +85,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstraper.cs" />
+    <Compile Include="EventModels\LogOnEventModel.cs" />
     <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\SalesViewModel.cs" />

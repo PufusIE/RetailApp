@@ -21,6 +21,7 @@ namespace RAWPFDesktopUI.ViewModels
             _loggedInUser = loggedInUser;
         }
 
+        // Listbox of products
         private BindingList<string> _products;
 
         public BindingList<string> Products
@@ -33,9 +34,10 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
-        private string _itemQuantity;
+        //How many items to buy
+        private int _itemQuantity;
 
-        public string ItemQuantity
+        public int ItemQuantity
         {
             get { return _itemQuantity; }
             set 
@@ -45,6 +47,7 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
+        //Items in cart
         private BindingList<string> _cart;
 
         public BindingList<string> Cart
@@ -86,6 +89,7 @@ namespace RAWPFDesktopUI.ViewModels
 
         }
 
+        // Check out button
         public void CheckOut()
         {
 
@@ -104,10 +108,11 @@ namespace RAWPFDesktopUI.ViewModels
 
         }
 
+        // Add to cart button
         public void AddToCart()
         {
 
-        }
+        } 
 
         public bool CanAddToCart
         {
@@ -123,6 +128,7 @@ namespace RAWPFDesktopUI.ViewModels
             
         }       
 
+        //Remove from cart button
         public void RemoveFromCart()
         {
 

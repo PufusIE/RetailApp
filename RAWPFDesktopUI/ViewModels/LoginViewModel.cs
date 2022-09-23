@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using RAWPFDesktopUI.EventModels;
 using RAWPFDesktopUI.Helpers;
 using RAWPFDesktopUILibrary.Api;
 using RAWPFDesktopUILibrary.Models;
@@ -13,15 +14,15 @@ namespace RAWPFDesktopUI.ViewModels
     public class LoginViewModel : Screen
     {
 		private readonly IAPIHelper _apiHelper;
-		private readonly ILoggedInUser _loggedInUser;
+		private readonly IEventAggregator _events;
 		private string _username;
 		private string _password;
         private string _errorMessage;
 
-		public LoginViewModel(IAPIHelper apiHelper, ILoggedInUser loggedInUser)
+		public LoginViewModel(IAPIHelper apiHelper, IEventAggregator events)
 		{
 			_apiHelper = apiHelper;
-			_loggedInUser = loggedInUser;
+			_events = events;
 		}
 
 		//Username textbox
@@ -98,8 +99,10 @@ namespace RAWPFDesktopUI.ViewModels
 				// Calling /Token endpoint
 				var result = await _apiHelper.Authenticate(Username, Password);
 
-				// Calling api/user endpoint
-				await _apiHelper.GetLoggedInUserInfo(result.Access_Token);				
+				// Calling api/user endpoint and populating singelton model 
+				await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
+
+				await _events.PublishOnUIThreadAsync(new LogOnEventModel());
 			}
 			catch (Exception ex)
 			{
