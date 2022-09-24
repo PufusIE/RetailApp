@@ -12,12 +12,18 @@ namespace RAWPFDesktopUILibrary.Api
 {
     public class APIHelper : IAPIHelper
     {
-        private HttpClient apiClient;
+        private HttpClient _apiClient;
         private readonly ILoggedInUser _loggedInUser;
+
+        public HttpClient ApiClient
+        {
+            get { return _apiClient; }            
+        }
+
 
         public APIHelper(HttpClient apiC, ILoggedInUser loggedInUser)
         {
-            apiClient = apiC;
+            _apiClient = apiC;
             _loggedInUser = loggedInUser;
             InitializeClient();
         }
@@ -28,10 +34,10 @@ namespace RAWPFDesktopUILibrary.Api
             string api = ConfigurationManager.AppSettings["api"];
 
             //configuring our API Client
-            apiClient = new HttpClient();
-            apiClient.BaseAddress = new Uri(api);
-            apiClient.DefaultRequestHeaders.Accept.Clear();
-            apiClient.DefaultRequestHeaders.Accept
+            _apiClient = new HttpClient();
+            _apiClient.BaseAddress = new Uri(api);
+            _apiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiClient.DefaultRequestHeaders.Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -45,7 +51,7 @@ namespace RAWPFDesktopUILibrary.Api
                 new KeyValuePair<string, string>("password", password)
             });
                         
-            using (HttpResponseMessage response = await apiClient.PostAsync("/Token", data))
+            using (HttpResponseMessage response = await _apiClient.PostAsync("/Token", data))
             {
                 //Reading response from api call and populating AuthenticatedUser model
                 if (response.IsSuccessStatusCode == true)
@@ -63,14 +69,14 @@ namespace RAWPFDesktopUILibrary.Api
         //Calling api/user endpoint and mapping model
         public async Task GetLoggedInUserInfo(string token)
         {
-            apiClient.DefaultRequestHeaders.Clear();
-            apiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiClient.DefaultRequestHeaders.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Clear();
             //Passing bearer token with every call
-            apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-            apiClient.DefaultRequestHeaders.Accept
+            _apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            _apiClient.DefaultRequestHeaders.Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            using (HttpResponseMessage response = await apiClient.GetAsync("/api/User"))
+            using (HttpResponseMessage response = await _apiClient.GetAsync("/api/User"))
             {
                 //reading respons from api call and populating AuthenticatedUser model
                 if (response.IsSuccessStatusCode == true)

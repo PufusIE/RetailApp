@@ -23,11 +23,5 @@ namespace RADataManagerLibrary.DataAccess
 
             return output;
         }
-
-        //getting connection string from web.config
-        private string GetConnectionString(string name)
-        {
-            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
-        }
     }
 }

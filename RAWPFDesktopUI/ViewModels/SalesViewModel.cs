@@ -12,19 +12,29 @@ namespace RAWPFDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private readonly IAPIHelper _apiHelper;
-        private readonly ILoggedInUser _loggedInUser;
-
-        public SalesViewModel(IAPIHelper apiHelper, ILoggedInUser loggedInUser)
+        private readonly IProductEndPoint _productEndPoint;
+        public SalesViewModel(IProductEndPoint productEndPoint)
         {
-            _apiHelper = apiHelper;
-            _loggedInUser = loggedInUser;
+            _productEndPoint = productEndPoint;
+        }
+
+        //Loading products
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        private async Task LoadProducts()
+        {
+            var productList = await _productEndPoint.GetAll();
+            Products = new BindingList<ProductModel>(productList);
         }
 
         // Listbox of products
-        private BindingList<string> _products;
+        private BindingList<ProductModel> _products;
 
-        public BindingList<string> Products
+        public BindingList<ProductModel> Products
         {
             get { return _products; }
             set 
@@ -48,9 +58,9 @@ namespace RAWPFDesktopUI.ViewModels
         }
 
         //Items in cart
-        private BindingList<string> _cart;
+        private BindingList<ProductModel> _cart;        
 
-        public BindingList<string> Cart
+        public BindingList<ProductModel> Cart
         {
             get { return _cart; }
             set 
