@@ -53,6 +53,7 @@
     <Compile Include="Api\IProductEndPoint.cs" />
     <Compile Include="Api\ProductEndPoint.cs" />
     <Compile Include="Models\AuthenticatedUser.cs" />
+    <Compile Include="Models\CartItemModel.cs" />
     <Compile Include="Models\ILogedInUser.cs" />
     <Compile Include="Models\LogedInUser.cs" />
     <Compile Include="Models\ProductModel.cs" />

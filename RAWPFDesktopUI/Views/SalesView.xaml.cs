@@ -23,6 +23,6 @@ namespace RAWPFDesktopUI.Views
         public SalesView()
         {
             InitializeComponent();
-        }
+        }        
     }
 }

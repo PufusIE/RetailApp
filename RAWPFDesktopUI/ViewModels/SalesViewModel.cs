@@ -4,6 +4,7 @@ using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +45,19 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
+        private ProductModel _selectedProduct;
+
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set 
+            {
+                _selectedProduct = value; 
+                NotifyOfPropertyChange(() => SelectedProduct);
+            }
+        }
+
+
         //How many items to buy
         private int _itemQuantity;
 
@@ -54,13 +68,14 @@ namespace RAWPFDesktopUI.ViewModels
             { 
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
         //Items in cart
-        private BindingList<ProductModel> _cart;        
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();        
 
-        public BindingList<ProductModel> Cart
+        public BindingList<CartItemModel> Cart 
         {
             get { return _cart; }
             set 
@@ -74,8 +89,14 @@ namespace RAWPFDesktopUI.ViewModels
         {
             get 
             {
-                // TODO - Replace with math
-                return "€ 0.00"; 
+                decimal subTotal = 0;
+
+                foreach (var item in Cart)
+                {                    
+                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+                }
+                var cultureInfo = CultureInfo.GetCultureInfo("en-IE");
+                return subTotal.ToString("C", cultureInfo); 
             }
             
         }
@@ -85,7 +106,7 @@ namespace RAWPFDesktopUI.ViewModels
             get
             {
                 // TODO - Replace with math
-                return "€ 0.00";
+                return "€0.00";
             }
 
         }
@@ -94,7 +115,7 @@ namespace RAWPFDesktopUI.ViewModels
             get
             {
                 // TODO - Replace with math
-                return "€ 0.00";
+                return "€0.00";
             }
 
         }
@@ -115,13 +136,39 @@ namespace RAWPFDesktopUI.ViewModels
 
                 return output;
             }
-
         }
 
         // Add to cart button
         public void AddToCart()
         {
+            // Evaluate if selected item is already in the cart
+            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
+            if (existingItem != null)
+            {
+                //Add selected item quantity from box to overall quantity in cart (here)
+                existingItem.QuantityInCart += ItemQuantity;
+
+                //Hack - There should be a better way to refresh items
+                Cart.Remove(existingItem);
+                Cart.Add(existingItem);
+            }
+            else
+            {
+                //Converts from Products model to CartItemModel
+                CartItemModel product = new CartItemModel
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+
+                Cart.Add(product);
+            }
+
+            //Removes items from total stock so you can't add more than you have in stock
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+            NotifyOfPropertyChange(() => SubTotal);
         } 
 
         public bool CanAddToCart
@@ -132,6 +179,10 @@ namespace RAWPFDesktopUI.ViewModels
 
                 //Make sure something is selected
                 //there is an item quantity
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;
+                }
 
                 return output;
             }
@@ -142,6 +193,7 @@ namespace RAWPFDesktopUI.ViewModels
         public void RemoveFromCart()
         {
 
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanRemoveFromCart
