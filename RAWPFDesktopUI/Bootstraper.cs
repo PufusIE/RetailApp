@@ -2,9 +2,11 @@
 using RAWPFDesktopUI.Helpers;
 using RAWPFDesktopUI.ViewModels;
 using RAWPFDesktopUILibrary.Api;
+using RAWPFDesktopUILibrary.Helpers;
 using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration.Internal;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -39,7 +41,8 @@ namespace RAWPFDesktopUI
                  .Singleton<IWindowManager, WindowManager>()
                  .Singleton<IEventAggregator, EventAggregator>()
                  .Singleton<IAPIHelper, APIHelper>()
-                 .Singleton<ILoggedInUser, LoggedInUser>();
+                 .Singleton<ILoggedInUser, LoggedInUser>()
+                 .Singleton<IConfigHelper, ConfigHelper>();
 
             //reflection
             GetType().Assembly.GetTypes()

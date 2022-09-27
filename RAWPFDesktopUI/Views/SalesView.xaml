@@ -65,12 +65,12 @@
 
         <DockPanel Grid.Row="4" Grid.Column="2">
             <TextBlock Text="Tax: "/>
-            <TextBlock Text="€ 0.00" TextAlignment="Right"/>
+            <TextBlock Text="{Binding Tax}" TextAlignment="Right"/>
         </DockPanel>
 
         <DockPanel Grid.Row="5" Grid.Column="2">
             <TextBlock Text="Total: "/>
-            <TextBlock Text="€ 0.00" TextAlignment="Right"/>
+            <TextBlock Text="{Binding Total}" TextAlignment="Right"/>
         </DockPanel>
 
         <Button x:Name="CheckOut" Grid.Row="6" Grid.Column="2" Content="Check Out" Margin="0 20 0 0" Padding="5"/>

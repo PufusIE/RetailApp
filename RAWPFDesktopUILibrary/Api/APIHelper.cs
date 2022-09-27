@@ -20,7 +20,6 @@ namespace RAWPFDesktopUILibrary.Api
             get { return _apiClient; }            
         }
 
-
         public APIHelper(HttpClient apiC, ILoggedInUser loggedInUser)
         {
             _apiClient = apiC;

@@ -6,5 +6,6 @@
     [RetailPrice] MONEY NOT NULL DEFAULT 0, 
     [QuantityInStock] INT NOT NULL DEFAULT 0,
     [CreateDate] DATETIME2 NOT NULL DEFAULT getutcdate(), 
-    [LastModified] DATETIME2 NOT NULL DEFAULT getutcdate() 
+    [LastModified] DATETIME2 NOT NULL DEFAULT getutcdate(), 
+    [IsTaxable] BIT NOT NULL DEFAULT 1 
 )

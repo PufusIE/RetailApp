@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace RAWPFDesktopUILibrary.Models
 {
+    //This model is for Display
     public class ProductModel
     {
         public int Id { get; set; }
@@ -13,5 +14,6 @@ namespace RAWPFDesktopUILibrary.Models
         public string Description { get; set; }
         public decimal RetailPrice { get; set; }
         public int QuantityInStock { get; set; }
+        public bool IsTaxable { get; set; }
     }
 }

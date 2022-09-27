@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RAWPFDesktopUILibrary.Api;
+using RAWPFDesktopUILibrary.Helpers;
 using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,12 @@ namespace RAWPFDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private readonly IProductEndPoint _productEndPoint;
-        public SalesViewModel(IProductEndPoint productEndPoint)
+        private readonly IConfigHelper _configHelper;
+
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
         {
             _productEndPoint = productEndPoint;
+            _configHelper = configHelper;
         }
 
         //Loading products
@@ -89,35 +93,58 @@ namespace RAWPFDesktopUI.ViewModels
         {
             get 
             {
-                decimal subTotal = 0;
+                decimal subTotal = CalculateSubTotal();               
+                
+                return subTotal.ToString("C", CultureInfo.GetCultureInfo("en-IE"));
+            }            
+        }
 
-                foreach (var item in Cart)
-                {                    
-                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-                }
-                var cultureInfo = CultureInfo.GetCultureInfo("en-IE");
-                return subTotal.ToString("C", cultureInfo); 
+        public decimal CalculateSubTotal()
+        {
+            decimal subTotal = 0;
+
+            foreach (var item in Cart)
+            {
+                subTotal += (item.Product.RetailPrice * item.QuantityInCart);
             }
-            
+
+            return subTotal;
+        }
+
+        public decimal CalculateTax()
+        {
+            decimal taxAmount = 0;
+            decimal taxRate = _configHelper.GetTaxRate()/100;
+
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable == true)
+                {
+                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
+                }
+            }
+
+            return taxAmount;
         }
 
         public string Tax
         {
             get
             {
-                // TODO - Replace with math
-                return "€0.00";
-            }
+                decimal taxAmount = CalculateTax();
 
+                return taxAmount.ToString("C", CultureInfo.GetCultureInfo("en-IE"));
+            }
         }
+
         public string Total
         {
             get
             {
-                // TODO - Replace with math
-                return "€0.00";
+                decimal total = CalculateSubTotal() + CalculateTax();
+                
+                return total.ToString("C", CultureInfo.GetCultureInfo("en-IE"));
             }
-
         }
 
         // Check out button
@@ -169,6 +196,8 @@ namespace RAWPFDesktopUI.ViewModels
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         } 
 
         public bool CanAddToCart
@@ -192,8 +221,9 @@ namespace RAWPFDesktopUI.ViewModels
         //Remove from cart button
         public void RemoveFromCart()
         {
-
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanRemoveFromCart
