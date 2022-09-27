@@ -13,19 +13,17 @@ namespace RAWPFDesktopUI.ViewModels
     public class ShellViewModel : Conductor<object>, IHandle<LogOnEventModel>
     {
         private readonly IEventAggregator _events;
-        private readonly SimpleContainer _container;
         private readonly SalesViewModel _salesVM;
 
-        public ShellViewModel( IEventAggregator events, SimpleContainer container, SalesViewModel SalesVM)
+        public ShellViewModel( IEventAggregator events, SalesViewModel SalesVM)
         {
             _events = events;
-            _container = container;
             _salesVM = SalesVM;
 
-            _events.Subscribe(this);
+            _events.SubscribeOnUIThread(this);
 
             //Display Log In as a start page
-            ActivateItemAsync(_container.GetInstance<LoginViewModel>());
+            ActivateItemAsync(IoC.Get<LoginViewModel>());
         }
 
         public async Task HandleAsync(LogOnEventModel message, CancellationToken cancellationToken)
