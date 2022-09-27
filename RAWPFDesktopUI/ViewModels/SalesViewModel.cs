@@ -45,7 +45,7 @@ namespace RAWPFDesktopUI.ViewModels
             set 
             { 
                 _products = value; 
-                NotifyOfPropertyChange(() => Products);
+                NotifyOfPropertyChange(() => Products); 
             }
         }
 
@@ -58,12 +58,13 @@ namespace RAWPFDesktopUI.ViewModels
             {
                 _selectedProduct = value; 
                 NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
 
         //How many items to buy
-        private int _itemQuantity;
+        private int _itemQuantity = 1;
 
         public int ItemQuantity
         {
@@ -203,7 +204,7 @@ namespace RAWPFDesktopUI.ViewModels
                 bool output = false;
 
                 //Make sure something is selected
-                //there is an item quantity
+                //and there is an item quantity
                 if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
                 {
                     output = true;

@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RAWPFDesktopUILibrary.Helpers
+namespace RADataManagerLibrary.Helpers
 {
-    //For app.config work (TODO: move this from  config to the API)
-    public class ConfigHelper : IConfigHelper
+    public static class ConfigHelper 
     {
-        public decimal GetTaxRate()
+        public static decimal GetTaxRate()
         {
             decimal output = 0;
 
