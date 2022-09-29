@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace RADataManagerLibrary.DataAccess
 {
+    //For QCalls
     public class ProductData
     {
         //Return all products
@@ -17,6 +18,15 @@ namespace RADataManagerLibrary.DataAccess
             SqlDataAccess sql = new SqlDataAccess();           
 
             var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new {}, "RAData");
+
+            return output;
+        }
+
+        public ProductModel GetById(int id)
+        {
+            SqlDataAccess sql = new SqlDataAccess();
+
+            var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = id }, "RAData").FirstOrDefault();
 
             return output;
         }

@@ -1,4 +1,5 @@
-﻿using RADataManagerLibrary.DataAccess;
+﻿using Microsoft.AspNet.Identity;
+using RADataManagerLibrary.DataAccess;
 using RADataManagerLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,11 @@ namespace RADataManager.Controllers
         [HttpPost]
         public void Post(SaleModel sale)
         {
-            // endpoint testing - Console.WriteLine();
+            SaleData data = new SaleData();
+            string userId = RequestContext.Principal.Identity.GetUserId();
+
+            data.SaveSale(sale, userId);
+
         }
     }
 }
