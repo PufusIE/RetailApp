@@ -15,11 +15,13 @@ namespace RAWPFDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private readonly IProductEndPoint _productEndPoint;
+        private readonly ISaleEndpoint _saleEndpoint;
         private readonly IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndPoint productEndPoint, ISaleEndpoint saleEndpoint, IConfigHelper configHelper)
         {
             _productEndPoint = productEndPoint;
+            _saleEndpoint = saleEndpoint;
             _configHelper = configHelper;
         }
 
@@ -147,7 +149,18 @@ namespace RAWPFDesktopUI.ViewModels
         // Check out button
         public void CheckOut()
         {
+            SaleModel sale = new SaleModel();
 
+            foreach (var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart
+                });
+            }
+
+            _saleEndpoint.PostSale(sale);
         }
 
         public bool CanCheckOut
@@ -157,6 +170,10 @@ namespace RAWPFDesktopUI.ViewModels
                 bool output = false;
 
                 //Make sure something is in the cart
+                if (Cart.Count > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
@@ -195,6 +212,7 @@ namespace RAWPFDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         } 
 
         public bool CanAddToCart
@@ -202,9 +220,7 @@ namespace RAWPFDesktopUI.ViewModels
             get 
             {
                 bool output = false;
-
-                //Make sure something is selected
-                //and there is an item quantity
+                
                 if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
                 {
                     output = true;
@@ -221,6 +237,7 @@ namespace RAWPFDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanRemoveFromCart

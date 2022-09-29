@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RADataManagerLibrary.Helpers
 {
-    public static class ConfigHelper 
+    public class ConfigHelper 
     {
         public static decimal GetTaxRate()
         {

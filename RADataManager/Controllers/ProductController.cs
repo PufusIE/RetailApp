@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace RADataManager.Controllers
 {
-   // [Authorize]
+    [Authorize]
     public class ProductController : ApiController
     {
         [HttpGet] // GET /api/Product
