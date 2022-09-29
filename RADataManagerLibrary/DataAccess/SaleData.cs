@@ -12,50 +12,51 @@ namespace RADataManagerLibrary.DataAccess
     public class SaleData
     {
         //Save sale to DB
-        public void SaveSale(SaleModel saleInfo, string cashierId)
+        public void SaveSale(SaleModel cartInfo, string cashierId)
         {
             //TODO: make it SOLID/Better
             //Filling in the sale detail models 
 
             //Model that is gonna be populated from foreach
-            List<SaleDetailDBModel> cartDetails = new List<SaleDetailDBModel>();
+            //And items from this list gonna be inserted into DB
+            List<SaleDetailDBModel> saleDetails = new List<SaleDetailDBModel>();
             //For Qcalls
             ProductData products = new ProductData();
             //Get the tax rate from appsettings
             var taxRate = ConfigHelper.GetTaxRate()/100;
 
             //sale.SaleDetails got populated from frontend cart
-            foreach (var item in saleInfo.SaleDetails)
+            foreach (var item in cartInfo.SaleDetails)
             {
-                var detail = new SaleDetailDBModel
+                var cartItem = new SaleDetailDBModel
                 {
                     ProductId = item.ProductId,
                     Quantity = item.Quantity
                 };
 
                 //Get information about this product from database Qcall
-                var productInfo = products.GetById(detail.ProductId);
+                var productInfo = products.GetById(cartItem.ProductId);
 
                 if (productInfo == null)
                 {
-                    throw new Exception($"The product Id of { detail.ProductId} was not found in the database");
+                    throw new Exception($"The product Id of { cartItem.ProductId} was not found in the database");
                 }
 
-                detail.PurchasePrice = (productInfo.RetailPrice * detail.Quantity);
+                cartItem.PurchasePrice = (productInfo.RetailPrice * cartItem.Quantity);
 
                 if (productInfo.IsTaxable)
                 {
-                    detail.Tax = (detail.PurchasePrice * taxRate);
+                    cartItem.Tax = (cartItem.PurchasePrice * taxRate);
                 }
 
-                cartDetails.Add(detail);
+                saleDetails.Add(cartItem);
             }
 
             //Sale to save
             SaleDBModel sale = new SaleDBModel
             {
-                Subtotal = cartDetails.Sum(x => x.PurchasePrice),
-                Tax = cartDetails.Sum(x => x.Tax),
+                Subtotal = saleDetails.Sum(x => x.PurchasePrice),
+                Tax = saleDetails.Sum(x => x.Tax),
                 CashierId = cashierId
             };
 
@@ -71,7 +72,7 @@ namespace RADataManagerLibrary.DataAccess
                                                     "RAData").FirstOrDefault();
 
             //Finish filling in the sale detail models
-            foreach (var item in cartDetails)
+            foreach (var item in saleDetails)
             {
                 item.SaleId = sale.Id;
                 //Save the sale detail Model
