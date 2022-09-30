@@ -1,4 +1,6 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
+using RAWPFDesktopUI.Models;
 using RAWPFDesktopUILibrary.Api;
 using RAWPFDesktopUILibrary.Helpers;
 using RAWPFDesktopUILibrary.Models;
@@ -16,12 +18,15 @@ namespace RAWPFDesktopUI.ViewModels
     {
         private readonly IProductEndPoint _productEndPoint;
         private readonly ISaleEndpoint _saleEndpoint;
+        private readonly IMapper _mapper;
         private readonly IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndPoint productEndPoint, ISaleEndpoint saleEndpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndPoint productEndPoint, ISaleEndpoint saleEndpoint,
+            IMapper mapper, IConfigHelper configHelper)
         {
             _productEndPoint = productEndPoint;
             _saleEndpoint = saleEndpoint;
+            _mapper = mapper;
             _configHelper = configHelper;
         }
 
@@ -35,13 +40,14 @@ namespace RAWPFDesktopUI.ViewModels
         private async Task LoadProducts()
         {
             var productList = await _productEndPoint.GetAll();
-            Products = new BindingList<ProductModel>(productList);
+            var products = _mapper.Map<List<ProductDisplayModel>>(productList);
+            Products = new BindingList<ProductDisplayModel>(products);
         }
 
         // Listbox of products
-        private BindingList<ProductModel> _products;
+        private BindingList<ProductDisplayModel> _products;
 
-        public BindingList<ProductModel> Products
+        public BindingList<ProductDisplayModel> Products
         {
             get { return _products; }
             set 
@@ -51,9 +57,9 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
-        private ProductModel _selectedProduct;
+        private ProductDisplayModel _selectedProduct;
 
-        public ProductModel SelectedProduct
+        public ProductDisplayModel SelectedProduct
         {
             get { return _selectedProduct; }
             set 
@@ -80,9 +86,9 @@ namespace RAWPFDesktopUI.ViewModels
         }
 
         //Items in cart
-        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();        
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();        
 
-        public BindingList<CartItemModel> Cart 
+        public BindingList<CartItemDisplayModel> Cart 
         {
             get { return _cart; }
             set 
@@ -183,21 +189,17 @@ namespace RAWPFDesktopUI.ViewModels
         public void AddToCart()
         {
             // Evaluate if selected item is already in the cart
-            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            CartItemDisplayModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
             if (existingItem != null)
             {
                 //Add selected item quantity from box to overall quantity in cart (here)
                 existingItem.QuantityInCart += ItemQuantity;
-
-                //Hack - There should be a better way to refresh items
-                Cart.Remove(existingItem);
-                Cart.Add(existingItem);
             }
             else
             {
-                //Converts from Products model to CartItemModel
-                CartItemModel product = new CartItemModel
+                //Converts from Products model to CartItemDisplayModel
+                CartItemDisplayModel product = new CartItemDisplayModel
                 {
                     Product = SelectedProduct,
                     QuantityInCart = ItemQuantity

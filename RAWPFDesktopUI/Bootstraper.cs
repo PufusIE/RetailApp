@@ -1,5 +1,7 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using RAWPFDesktopUI.Helpers;
+using RAWPFDesktopUI.Models;
 using RAWPFDesktopUI.ViewModels;
 using RAWPFDesktopUILibrary.Api;
 using RAWPFDesktopUILibrary.Helpers;
@@ -24,16 +26,27 @@ namespace RAWPFDesktopUI
         {
             Initialize();
 
-            //fix for passwordbox
+            //Fix for passwordbox
             ConventionManager.AddElementConvention<PasswordBox>(
             PasswordBoxHelper.BoundPasswordProperty,
             "Password",
             "PasswordChanged");
         }
 
-        //dependency injection
+        //Dependency injection
         protected override void Configure()
         {
+            //Configuring Automapper
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                cfg.CreateMap<CartItemModel, CartItemDisplayModel>();
+            });
+
+            var mapper = config.CreateMapper();
+
+            _container.Instance(mapper);
+
             _container.Instance(_container)
                 .PerRequest<IProductEndPoint, ProductEndPoint>()
                 .PerRequest<ISaleEndpoint, SaleEndpoint>();
@@ -45,7 +58,7 @@ namespace RAWPFDesktopUI
                  .Singleton<ILoggedInUser, LoggedInUser>()
                  .Singleton<IConfigHelper, ConfigHelper>();
 
-            //reflection
+            //Reflection
             GetType().Assembly.GetTypes()
                  .Where(type => type.IsClass)
                  .Where(type => type.Name.EndsWith("ViewModel"))
@@ -54,7 +67,7 @@ namespace RAWPFDesktopUI
                      viewModelType, viewModelType.Name, viewModelType));
         }
 
-        //diplaying main window and wiring up mvvm arch
+        //Diplaying main window and wiring up mvvm arch
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewForAsync<ShellViewModel>();
