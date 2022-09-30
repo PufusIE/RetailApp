@@ -10,9 +10,5 @@ namespace RAWPFDesktopUILibrary.Models
     {
         public ProductModel Product { get; set; }
         public int QuantityInCart { get; set; }
-        public string DisplayedName
-        {
-            get { return $"{Product.ProductName} ({QuantityInCart})"; }
-        }
     }
 }

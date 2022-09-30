@@ -70,6 +70,18 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
+        private CartItemDisplayModel _selectedCartItem;
+
+        public CartItemDisplayModel SelectedCartItem
+        {
+            get { return _selectedCartItem; }
+            set 
+            {
+                _selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
+            }
+        }
 
         //How many items to buy
         private int _itemQuantity = 1;
@@ -188,7 +200,7 @@ namespace RAWPFDesktopUI.ViewModels
         // Add to cart button
         public void AddToCart()
         {
-            // Evaluate if selected item is already in the cart
+            // Check if selected item is already in the cart
             CartItemDisplayModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
             if (existingItem != null)
@@ -230,12 +242,22 @@ namespace RAWPFDesktopUI.ViewModels
 
                 return output;
             }
-            
         }       
 
         //Remove from cart button
         public void RemoveFromCart()
         {
+            SelectedCartItem.Product.QuantityInStock++;
+
+            if (SelectedCartItem.QuantityInCart > 1)
+            {
+                SelectedCartItem.QuantityInCart--;
+            }
+            else
+            {
+                Cart.Remove(SelectedCartItem);
+            }
+
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
@@ -248,11 +270,13 @@ namespace RAWPFDesktopUI.ViewModels
             {
                 bool output = false;
 
-                //Make sure something is selected              
+                if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
-
         }
     }
 }
