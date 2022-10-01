@@ -164,8 +164,20 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
+        private async Task ResetSalesViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+
+            await LoadProducts();
+
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
+
         // Check out button
-        public void CheckOut()
+        public async Task CheckOut()
         {
             SaleModel sale = new SaleModel();
 
@@ -178,7 +190,8 @@ namespace RAWPFDesktopUI.ViewModels
                 });
             }
 
-            _saleEndpoint.PostSale(sale);
+            await _saleEndpoint.PostSale(sale);
+            await ResetSalesViewModel();
         }
 
         public bool CanCheckOut
@@ -254,7 +267,7 @@ namespace RAWPFDesktopUI.ViewModels
                 SelectedCartItem.QuantityInCart--;
             }
             else
-            {
+            { 
                 Cart.Remove(SelectedCartItem);
             }
 
@@ -262,6 +275,7 @@ namespace RAWPFDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => CanCheckOut);
+            NotifyOfPropertyChange(() => CanAddToCart);
         }
 
         public bool CanRemoveFromCart
@@ -270,7 +284,7 @@ namespace RAWPFDesktopUI.ViewModels
             {
                 bool output = false;
 
-                if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
+                if (SelectedCartItem != null && SelectedCartItem?.QuantityInCart > 0)
                 {
                     output = true;
                 }
