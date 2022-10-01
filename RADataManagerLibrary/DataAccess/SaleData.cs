@@ -20,8 +20,10 @@ namespace RADataManagerLibrary.DataAccess
             //Model that is gonna be populated from foreach
             //And items from this list gonna be inserted into DB
             List<SaleDetailDBModel> saleDetails = new List<SaleDetailDBModel>();
+            
             //For Qcalls
             ProductData products = new ProductData();
+            
             //Get the tax rate from appsettings
             var taxRate = ConfigHelper.GetTaxRate()/100;
 
@@ -62,21 +64,35 @@ namespace RADataManagerLibrary.DataAccess
 
             sale.Total = sale.Subtotal + sale.Tax;
 
-            //Saving the sale
-            SqlDataAccess sql = new SqlDataAccess();
-            sql.SaveData("dbo.spSale_Insert", sale, "RAData");
-
-            //Get id from the sale model
-            sale.Id = sql.LoadData<int, dynamic>("dbo.spSale_LookUp",
-                                                    new { sale.CashierId, sale.SaleDate },
-                                                    "RAData").FirstOrDefault();
-
-            //Finish filling in the sale detail models
-            foreach (var item in saleDetails)
+            using (SqlDataAccess sql = new SqlDataAccess())
             {
-                item.SaleId = sale.Id;
-                //Save the sale detail Model
-                sql.SaveData("dbo.spSaleDetail_Insert", item, "RAData");
+                try
+                {
+                    sql.StartTransaction("RAData");
+
+                    //Saving the sale                    
+                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
+
+                    //Get id from the sale model
+                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_LookUp",
+                                                            new { sale.CashierId, sale.SaleDate })
+                                                            .FirstOrDefault();
+
+                    //Finish filling in the sale detail models
+                    foreach (var item in saleDetails)
+                    {
+                        item.SaleId = sale.Id;
+
+                        //Save the sale detail Model
+                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
+                    }
+
+                }
+                catch
+                {
+                    sql.RollbackTransaction();
+                    throw;
+                }
             }
         }
     }
