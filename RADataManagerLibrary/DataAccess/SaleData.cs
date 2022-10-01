@@ -14,7 +14,8 @@ namespace RADataManagerLibrary.DataAccess
         //Save sale to DB
         public void SaveSale(SaleModel cartInfo, string cashierId)
         {
-            //TODO: make it SOLID/Better
+            //TODO: Add DI to dll's
+
             //Filling in the sale detail models 
 
             //Model that is gonna be populated from foreach
@@ -96,6 +97,15 @@ namespace RADataManagerLibrary.DataAccess
                     throw;
                 }
             }
+        }
+
+        public List<SaleReportModel> GetSaleReport()
+        {
+            SqlDataAccess sql = new SqlDataAccess();
+
+            var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "RAData");
+
+            return output;
         }
     }
 }

@@ -21,7 +21,14 @@ namespace RADataManager.Controllers
             string userId = RequestContext.Principal.Identity.GetUserId();
 
             data.SaveSale(sale, userId);
+        }
 
+        [HttpGet]
+        [Route("GetSalesReport")]
+        public List<SaleReportModel> GetSaleReport()
+        {
+            SaleData data = new SaleData();
+            return data.GetSaleReport();
         }
     }
 }
