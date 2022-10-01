@@ -64,6 +64,7 @@ namespace RADataManagerLibrary.DataAccess
 
             sale.Total = sale.Subtotal + sale.Tax;
 
+            //Making a query
             using (SqlDataAccess sql = new SqlDataAccess())
             {
                 try
@@ -87,6 +88,7 @@ namespace RADataManagerLibrary.DataAccess
                         sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
                     }
 
+                    sql.CommitTransaction();
                 }
                 catch
                 {

@@ -45,6 +45,7 @@ namespace RADataManagerLibrary.Internal.DataAccess
         private IDbConnection _connection;
         private IDbTransaction _transaction;
 
+        //Start of the transaction, opening the connection
         public void StartTransaction(string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
@@ -53,6 +54,8 @@ namespace RADataManagerLibrary.Internal.DataAccess
             _connection.Open();
 
             _transaction = _connection.BeginTransaction();
+
+            isClosed = false;
         }
 
         public List<T> LoadDataInTransaction<T, U>(string storedProcedure, U parameters)
@@ -73,21 +76,42 @@ namespace RADataManagerLibrary.Internal.DataAccess
                                 transaction: _transaction);
         }
 
+        private bool isClosed = false;
+
+        //Two end of the transaction methods, closing the connection
         public void CommitTransaction()
         {
             _transaction?.Commit();
             _connection?.Close();
+
+            isClosed = true;
         }
 
         public void RollbackTransaction()
         {
             _transaction.Rollback();
             _connection?.Close();
+
+            isClosed = true;
         }
 
+        //Dispose method in case of error
         public void Dispose()
         {
-            CommitTransaction();
+            if (isClosed == false)
+            {
+                try
+                {
+                    CommitTransaction();
+                }
+                catch 
+                {
+                    //TODO - log this issue
+                }
+            }
+
+            _transaction = null;
+            _connection = null;
         }
     }
 }
