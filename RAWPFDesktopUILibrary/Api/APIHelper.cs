@@ -65,6 +65,11 @@ namespace RAWPFDesktopUILibrary.Api
             }
         }
 
+        public void LogOffUser()
+        {
+            _apiClient.DefaultRequestHeaders.Clear();
+        }
+
         //Calling api/user endpoint and mapping model
         public async Task GetLoggedInUserInfo(string token)
         {

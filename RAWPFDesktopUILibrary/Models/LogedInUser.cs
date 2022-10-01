@@ -15,7 +15,7 @@ namespace RAWPFDesktopUILibrary.Models
         public string EmailAddress { get; set; }
         public DateTime CreateDate { get; set; }
 
-        public void LogOffUser()
+        public void ResetUserModel()
         {
             Token = string.Empty;
             Id = string.Empty ;

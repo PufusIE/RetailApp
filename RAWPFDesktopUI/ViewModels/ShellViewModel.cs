@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RAWPFDesktopUI.EventModels;
+using RAWPFDesktopUILibrary.Api;
 using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,14 @@ namespace RAWPFDesktopUI.ViewModels
         private readonly IEventAggregator _events;
         private readonly SalesViewModel _salesVM;
         private readonly ILoggedInUser _loggedInUser;
+        private readonly IAPIHelper _apiHelper;
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel SalesVM, ILoggedInUser loggedInUser)
+        public ShellViewModel(IEventAggregator events, SalesViewModel SalesVM, ILoggedInUser loggedInUser, IAPIHelper apiHelper)
         {
             _events = events;
             _salesVM = SalesVM;
             _loggedInUser = loggedInUser;
+            _apiHelper = apiHelper;
             _events.SubscribeOnUIThread(this);
 
             //Display Log In as a start page
@@ -41,7 +44,8 @@ namespace RAWPFDesktopUI.ViewModels
 
         public void LogOut()
         {
-            _loggedInUser.LogOffUser();
+            _loggedInUser.ResetUserModel();
+            _apiHelper.LogOffUser();
             ActivateItemAsync(IoC.Get<LoginViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
