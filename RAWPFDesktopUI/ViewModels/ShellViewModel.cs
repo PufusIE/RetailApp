@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RAWPFDesktopUI.EventModels;
+using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,13 @@ namespace RAWPFDesktopUI.ViewModels
     {
         private readonly IEventAggregator _events;
         private readonly SalesViewModel _salesVM;
+        private readonly ILoggedInUser _loggedInUser;
 
-        public ShellViewModel( IEventAggregator events, SalesViewModel SalesVM)
+        public ShellViewModel(IEventAggregator events, SalesViewModel SalesVM, ILoggedInUser loggedInUser)
         {
             _events = events;
             _salesVM = SalesVM;
-
+            _loggedInUser = loggedInUser;
             _events.SubscribeOnUIThread(this);
 
             //Display Log In as a start page
@@ -29,6 +31,34 @@ namespace RAWPFDesktopUI.ViewModels
         public async Task HandleAsync(LogOnEventModel message, CancellationToken cancellationToken)
         {
             await ActivateItemAsync(_salesVM);
+            NotifyOfPropertyChange(() => IsLoggedIn);
+        }
+
+        public void ExitApplication()
+        {
+            TryCloseAsync();
+        }
+
+        public void LogOut()
+        {
+            _loggedInUser.LogOffUser();
+            ActivateItemAsync(IoC.Get<LoginViewModel>());
+            NotifyOfPropertyChange(() => IsLoggedIn);
+        }
+
+        public bool IsLoggedIn
+        {
+            get
+            {
+                bool output = false;
+
+                if (string.IsNullOrWhiteSpace(_loggedInUser.Token) == false)
+                {
+                    output = true;
+                }
+
+                return output;
+            }
         }
     }
 }

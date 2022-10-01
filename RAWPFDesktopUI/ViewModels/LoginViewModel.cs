@@ -55,10 +55,12 @@ namespace RAWPFDesktopUI.ViewModels
 			get 
 			{
 				bool output = false;
+
 				if (ErrorMessage?.Length >0)
 				{
 					output = true;
 				}
+
 				return output; 
 			}
 		}
@@ -86,6 +88,7 @@ namespace RAWPFDesktopUI.ViewModels
 				{
 					output = true;
 				}
+
 				return output;
 			}
 		}
