@@ -7,10 +7,12 @@ using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RAWPFDesktopUI.ViewModels
 {
@@ -20,21 +22,48 @@ namespace RAWPFDesktopUI.ViewModels
         private readonly ISaleEndpoint _saleEndpoint;
         private readonly IMapper _mapper;
         private readonly IConfigHelper _configHelper;
+        private readonly IWindowManager _window;
 
         public SalesViewModel(IProductEndPoint productEndPoint, ISaleEndpoint saleEndpoint,
-            IMapper mapper, IConfigHelper configHelper)
+            IMapper mapper, IConfigHelper configHelper, IWindowManager window)
         {
             _productEndPoint = productEndPoint;
             _saleEndpoint = saleEndpoint;
             _mapper = mapper;
             _configHelper = configHelper;
+            _window = window;
         }
 
         //Loading products
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
-            await LoadProducts();
+            try
+            {
+                await LoadProducts();
+            }
+            catch (Exception ex)
+            {
+                dynamic settings = new ExpandoObject();
+                settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                settings.ResizeMode = ResizeMode.NoResize;
+                settings.Title = "System Error";
+
+                var statusInfo = IoC.Get<StatusInfoViewModel>();
+
+                if (ex.Message.ToLower() == "unauthorized")
+                {
+                    statusInfo.UpdateMessageInfo("Unauthorized Access", "You do not have access to Sale Form.");
+                    _window.ShowDialogAsync(statusInfo, null, settings);
+                }
+                else
+                {
+                    statusInfo.UpdateMessageInfo("Fatal Exception", ex.Message);
+                    _window.ShowDialogAsync(statusInfo, null, settings);
+                }
+
+                await TryCloseAsync();
+            }
         }
 
         private async Task LoadProducts()
