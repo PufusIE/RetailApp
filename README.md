@@ -1,5 +1,13 @@
-# About this project 
-This is a Retail application for store use. The overall goal of this project for me is to step up and dive into more advanced technologies.
+# About this project and Planning   
+My plan for this project is to build a retail application for a store with:  
+
+Desktop UI for cashiers  
+Web UI for administrators and managers  
+And separate data access with API  
+
+  
+
+I plan to build everything on .NET Framework and then Upgrade whole application to .NET Core 
 
 # Technologies that I use in this project:
 
@@ -7,7 +15,7 @@ Unit Testing
 Async  
 Dependency Injection  
 WPF  
-ASP>NET MVC  
+ASP.NET MVC  
 .NET Core  
 SSDT  
 Git  
@@ -20,7 +28,8 @@ Data Validation
 HTML  
 CSS  
 JavaScript  
-Authentication   
+Authentication  
+Authorization roles  
 Entity Framework Core  
 SQL Server   
 SSMS    
