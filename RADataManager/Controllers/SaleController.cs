@@ -14,6 +14,7 @@ namespace RADataManager.Controllers
     [Authorize]
     public class SaleController : ApiController
     {
+        [Authorize(Roles ="Cashier")]
         [HttpPost]
         public void Post(SaleModel sale)
         {
@@ -23,6 +24,7 @@ namespace RADataManager.Controllers
             data.SaveSale(sale, userId);
         }
 
+        [Authorize(Roles = "Manager, Admin")]
         [HttpGet]
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSaleReport()
