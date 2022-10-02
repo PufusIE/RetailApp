@@ -3,13 +3,11 @@ My plan for this project is to build a retail application for a store with:
 
 Desktop UI for cashiers  
 Web UI for administrators and managers  
-And seperate data acces with API    
+And separate data access with API  
 
   
 
 I plan to build everything on .NET Framework and then Upgrade whole application to .NET Core 
-
-
 
 # Technologies that I use in this project:
 
@@ -30,7 +28,8 @@ Data Validation
 HTML  
 CSS  
 JavaScript  
-Authentication   
+Authentication  
+Authorization roles  
 Entity Framework Core  
 SQL Server   
 SSMS    
