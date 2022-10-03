@@ -34,16 +34,19 @@ namespace RAWPFDesktopUI.ViewModels
             _window = window;
         }
 
-        //Loading products
+        //Waiting until view loads before loading products
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
+
+            //Checking if logged in user have access to this page
             try
             {
                 await LoadProducts();
             }
             catch (Exception ex)
             {
+                //Setting setup for status window
                 dynamic settings = new ExpandoObject();
                 settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 settings.ResizeMode = ResizeMode.NoResize;
@@ -69,6 +72,8 @@ namespace RAWPFDesktopUI.ViewModels
         private async Task LoadProducts()
         {
             var productList = await _productEndPoint.GetAll();
+            
+            //Mapping models with automapper
             var products = _mapper.Map<List<ProductDisplayModel>>(productList);
             Products = new BindingList<ProductDisplayModel>(products);
         }

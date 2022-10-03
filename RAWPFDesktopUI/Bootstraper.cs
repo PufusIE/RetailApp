@@ -52,6 +52,7 @@ namespace RAWPFDesktopUI
 
             _container.Instance(_container)
                 .PerRequest<IProductEndPoint, ProductEndPoint>()
+                .PerRequest<IUserEndpoint, UserEndpoint>()
                 .PerRequest<ISaleEndpoint, SaleEndpoint>();
 
             _container

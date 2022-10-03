@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using RADataManager.Models;
 using RADataManagerLibrary.DataAccess;
 using RADataManagerLibrary.Models;
 using System;
@@ -22,6 +24,40 @@ namespace RADataManager.Controllers
             string userId = RequestContext.Principal.Identity.GetUserId();
 
             return data.GetUserById(userId).First();
+        }
+
+        //Returns info about all registered users
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("api/User/Admin/GetAllUsers")]
+        public List<ApplicationUserModel> GetAllUsers()
+        {
+            List<ApplicationUserModel> output = new List<ApplicationUserModel>();
+            
+            //Entity Framework
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                //Gets users
+                var users = userManager.Users.ToList();
+                //Gets roels
+                var roles = context.Roles.ToList();
+
+                //Overcomplicated linq that I don't really like, could've done the same with two foreach
+                output = users.Select(u => new ApplicationUserModel
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Roles = u.Roles.Join(roles,
+                                        s1 => s1.RoleId,
+                                        s2 => s2.Id,
+                                        (s1, s2) => new { a = s1, b = s2 }).ToDictionary(x => x.a.RoleId, x => x.b.Name)
+                }).ToList();
+            }
+
+            return output;
         }
     }
 }
