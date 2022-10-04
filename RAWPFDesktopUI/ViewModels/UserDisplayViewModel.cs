@@ -191,5 +191,7 @@ namespace RAWPFDesktopUI.ViewModels
             AvaliableRoles.Add(SelectedUserRole);
             UserRoles.Remove(SelectedUserRole);
         }
+
+        //Upgrade to .Net Core
     }
 }
