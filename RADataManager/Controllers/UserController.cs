@@ -16,6 +16,7 @@ namespace RADataManager.Controllers
     [Authorize]
     public class UserController : ApiController
     {
+        //This is called using logged on user credentials, means you don't pass a value manually
         [HttpGet] // GET /api/User
         public UserModel GetById()
         {
@@ -45,7 +46,7 @@ namespace RADataManager.Controllers
                 //Gets roels
                 var roles = context.Roles.ToList();
 
-                //Overcomplicated linq that I don't really like, could've done the same with two foreach
+                //Overcomplicated LINQ that I don't really like, could've done the same with two foreach
                 output = users.Select(u => new ApplicationUserModel
                 {
                     Id = u.Id,
@@ -58,6 +59,47 @@ namespace RADataManager.Controllers
             }
 
             return output;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("api/User/Admin/GetAllRoles")]
+        public Dictionary<string, string> GetAllRoles()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var output = context.Roles.ToDictionary(x => x.Id, x => x.Name);
+
+                return output;
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/AddRole")]
+        public void AddARole(UserRolePairModel pairing)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                userManager.AddToRole(pairing.UserId, pairing.RoleName);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/RemoveRole")]
+        public void RemoveARole(UserRolePairModel pairing)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                userManager.RemoveFromRole(pairing.UserId, pairing.RoleName);
+            }
         }
     }
 }
