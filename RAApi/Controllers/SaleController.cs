@@ -12,11 +12,18 @@ namespace RAApi.Controllers
     [Authorize]
     public class SaleController : ControllerBase
     {
+        private readonly IConfiguration _config;
+
+        public SaleController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [Authorize(Roles = "Cashier")]
         [HttpPost]
         public void Post(SaleModel sale)
         {
-            SaleData data = new SaleData();
+            SaleData data = new SaleData(_config);
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             data.SaveSale(sale, userId);
@@ -27,7 +34,7 @@ namespace RAApi.Controllers
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSaleReport()
         {
-            SaleData data = new SaleData();
+            SaleData data = new SaleData(_config);
             return data.GetSaleReport();
         }
     }

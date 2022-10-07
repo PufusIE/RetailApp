@@ -1,4 +1,5 @@
-﻿using RADataManagerLibrary.Helpers;
+﻿using Microsoft.Extensions.Configuration;
+using RADataManagerLibrary.Helpers;
 using RADataManagerLibrary.Internal.DataAccess;
 using RADataManagerLibrary.Models;
 using System;
@@ -11,6 +12,13 @@ namespace RADataManagerLibrary.DataAccess
 {
     public class SaleData
     {
+        private readonly IConfiguration _config;
+
+        public SaleData(IConfiguration config)
+        {
+            _config = config;
+        }
+
         //Save sale to DB
         public void SaveSale(SaleModel cartInfo, string cashierId)
         {
@@ -23,7 +31,7 @@ namespace RADataManagerLibrary.DataAccess
             List<SaleDetailDBModel> saleDetails = new List<SaleDetailDBModel>();
             
             //For Qcalls
-            ProductData products = new ProductData();
+            ProductData products = new ProductData(_config);
             
             //Get the tax rate from appsettings
             var taxRate = ConfigHelper.GetTaxRate()/100;
@@ -66,7 +74,7 @@ namespace RADataManagerLibrary.DataAccess
             sale.Total = sale.Subtotal + sale.Tax;
 
             //Making a query
-            using (SqlDataAccess sql = new SqlDataAccess())
+            using (SqlDataAccess sql = new SqlDataAccess(_config))
             {
                 try
                 {
@@ -101,7 +109,7 @@ namespace RADataManagerLibrary.DataAccess
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess();
+            SqlDataAccess sql = new SqlDataAccess(_config);
 
             var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "RAData");
 

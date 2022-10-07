@@ -11,11 +11,18 @@ namespace RAApi.Controllers
     [Authorize]
     public class InventoryController : ControllerBase
     {
+        private readonly IConfiguration _config;
+
+        public InventoryController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public void Post(InventoryModel item)
         {
-            InventoryData data = new InventoryData();
+            InventoryData data = new InventoryData(_config);
 
             data.SaveInventoryRecord(item);
         }
@@ -24,7 +31,7 @@ namespace RAApi.Controllers
         [HttpGet]
         public List<InventoryModel> GetSaleReport()
         {
-            InventoryData data = new InventoryData();
+            InventoryData data = new InventoryData(_config);
 
             return data.GetInventory();
         }

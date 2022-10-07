@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,10 +12,14 @@ namespace RADataManagerLibrary.Internal.DataAccess
 {
     public class SqlDataAccess : IDisposable
     {
+        public SqlDataAccess(IConfiguration config)
+        {
+            _config = config;
+        }
         //Getting connection string from web.config
         public string GetConnectionString(string name)
         {
-            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            return _config.GetConnectionString("RAData");
         }
 
         //Loads data from database
@@ -77,6 +82,7 @@ namespace RADataManagerLibrary.Internal.DataAccess
         }
 
         private bool isClosed = false;
+        private readonly IConfiguration _config;
 
         //Two end of the transaction methods, closing the connection
         public void CommitTransaction()
