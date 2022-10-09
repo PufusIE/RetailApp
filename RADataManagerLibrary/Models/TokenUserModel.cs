@@ -1,5 +1,10 @@
-﻿namespace RAApi.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace RADataManagerLibrary.Models
 {
+    //Used for /token endpoint
     public class TokenUserModel
     {
         public string Username { get; set; }

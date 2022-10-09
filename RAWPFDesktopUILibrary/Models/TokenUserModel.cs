@@ -4,6 +4,7 @@ using System.Text;
 
 namespace RAWPFDesktopUILibrary.Models
 {
+    //Used for /token endpoint
     public class TokenUserModel
     {
         public string Username { get; set; }

@@ -24,27 +24,7 @@ namespace RAApi.Controllers
         }
 
         public async Task<IActionResult> Privacy()
-        {
-            ////one time use, temporary hard code role insert
-            //string[] roles = { "Admin", "Manager", "Cashier" };
-
-            //foreach (var role in roles)
-            //{
-            //    var roleExist = await _roleManager.RoleExistsAsync(role);
-
-            //    if (roleExist == false)
-            //    {
-            //        await _roleManager.CreateAsync(new IdentityRole(role));
-            //    }
-            //}
-
-            //var user = await _userManager.FindByEmailAsync("email");
-
-            //if (user != null)
-            //{
-            //    await _userManager.AddToRoleAsync(user, "role");
-            //}
-
+        {   
             return View();
         }
 

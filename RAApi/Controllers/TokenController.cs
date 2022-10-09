@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RAApi.Data;
-using RAApi.Models;
+using RAWPFDesktopUILibrary.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace RAApi.Controllers
@@ -22,6 +21,7 @@ namespace RAApi.Controllers
             _context = context;
             _userManager = userManager;
         }
+                
         [Route("/token")]    
         [HttpPost]        
         public async Task<IActionResult> Create(TokenUserModel user)
@@ -36,12 +36,14 @@ namespace RAApi.Controllers
             }
         }
 
+        //Check login credentials
         private async Task<bool> IsValidUsernameAndPassword(string username, string password)
         {
             var user = await _userManager.FindByEmailAsync(username);
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
+        //Generate token that signed with claims
         //TODO - offload the work to azure active directory, or similar
         private async Task<dynamic> GenerateToken(string username)
         {
@@ -54,10 +56,15 @@ namespace RAApi.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),                
                 new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString())
             };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+            }
 
             var token = new JwtSecurityToken(
                 new JwtHeader(

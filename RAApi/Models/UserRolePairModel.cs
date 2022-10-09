@@ -1,5 +1,5 @@
 ﻿namespace RAApi.Models
-{
+{    
     public class UserRolePairModel
     {
         public string UserId { get; set; }
