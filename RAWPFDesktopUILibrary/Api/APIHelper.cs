@@ -43,14 +43,9 @@ namespace RAWPFDesktopUILibrary.Api
         //Calling /Token endpoint
         public async Task<AuthenticatedUser> Authenticate(string username, string password)
         {
-            var data = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("username", username),
-                new KeyValuePair<string, string>("password", password),
-                new KeyValuePair<string, string>("grant_type", "password")
-            });
+            var data = new TokenUserModel { Username = username, Password = password, Grant_Type = "g" };           
                         
-            using (HttpResponseMessage response = await _apiClient.PostAsync("/Token", data))
+            using (HttpResponseMessage response = await _apiClient.PostAsJsonAsync("/Token", data))
             {
                 //Reading response from api call and populating AuthenticatedUser model
                 if (response.IsSuccessStatusCode == true)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RAApi.Data;
+using RAApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
@@ -23,11 +24,11 @@ namespace RAApi.Controllers
         }
         [Route("/token")]    
         [HttpPost]        
-        public async Task<IActionResult> Create(string username, string password, string grant_type)
+        public async Task<IActionResult> Create(TokenUserModel user)
         {
-            if (await IsValidUsernameAndPassword(username, password))
+            if (await IsValidUsernameAndPassword(user.Username, user.Password))
             {
-                return new ObjectResult(await GenerateToken(username));
+                return new ObjectResult(await GenerateToken(user.Username));
             }
             else
             {

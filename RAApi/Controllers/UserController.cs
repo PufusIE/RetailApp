@@ -37,7 +37,7 @@ namespace RAApi.Controllers
         }
 
         //Returns info about all registered users and their roles
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]        
         [HttpGet]
         [Route("Admin/GetAllUsers")]
         public List<ApplicationUserModel> GetAllUsers()
@@ -57,7 +57,7 @@ namespace RAApi.Controllers
             return output;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]        
         [HttpGet]
         [Route("Admin/GetAllRoles")]
         public Dictionary<string, string> GetAllRoles()
