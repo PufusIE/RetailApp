@@ -45,9 +45,9 @@ namespace RAWPFDesktopUILibrary.Api
         {
             var data = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("grant_type", "password"),
                 new KeyValuePair<string, string>("username", username),
-                new KeyValuePair<string, string>("password", password)
+                new KeyValuePair<string, string>("password", password),
+                new KeyValuePair<string, string>("grant_type", "password")
             });
                         
             using (HttpResponseMessage response = await _apiClient.PostAsync("/Token", data))

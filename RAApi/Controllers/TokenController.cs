@@ -9,7 +9,9 @@ using System.Text;
 
 namespace RAApi.Controllers
 {
-    public class TokenController : Controller
+    [Route("[controller]")]
+    [ApiController]   
+    public class TokenController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
@@ -19,9 +21,9 @@ namespace RAApi.Controllers
             _context = context;
             _userManager = userManager;
         }
-
-        [HttpPost]
-        async Task<IActionResult> Create(string username, string password, string grant_type)
+        [Route("/token")]    
+        [HttpPost]        
+        public async Task<IActionResult> Create(string username, string password, string grant_type)
         {
             if (await IsValidUsernameAndPassword(username, password))
             {
@@ -59,7 +61,7 @@ namespace RAApi.Controllers
             var token = new JwtSecurityToken(
                 new JwtHeader(
                     new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Rabbit")),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("RabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbit")),
                         SecurityAlgorithms.HmacSha256)),
                 new JwtPayload(claims));
 

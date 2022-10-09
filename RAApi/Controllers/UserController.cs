@@ -16,13 +16,13 @@ namespace RAApi.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly UserData _userData;
+        private readonly IConfiguration _config;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(UserData userData, ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserController(IConfiguration config, ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
-            _userData = userData;
+            _config = config;
             _context = context;
             _userManager = userManager;
         }
@@ -31,14 +31,15 @@ namespace RAApi.Controllers
         public UserModel GetById()
         {            
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            UserData data = new UserData(_config);
 
-            return _userData.GetUserById(userId).First();
+            return data.GetUserById(userId).First();
         }
 
         //Returns info about all registered users and their roles
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("api/User/Admin/GetAllUsers")]
+        [Route("Admin/GetAllUsers")]
         public List<ApplicationUserModel> GetAllUsers()
         {
             List<ApplicationUserModel> output = new List<ApplicationUserModel>();                      
@@ -58,7 +59,7 @@ namespace RAApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("api/User/Admin/GetAllRoles")]
+        [Route("Admin/GetAllRoles")]
         public Dictionary<string, string> GetAllRoles()
         {
             var output = _context.Roles.ToDictionary(x => x.Id, x => x.Name);
@@ -68,7 +69,7 @@ namespace RAApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [Route("api/User/Admin/AddRole")]
+        [Route("Admin/AddRole")]
         public async Task AddARole(UserRolePairModel pairing)
         {
             var user = await _userManager.FindByIdAsync(pairing.UserId);
@@ -77,7 +78,7 @@ namespace RAApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [Route("api/User/Admin/RemoveRole")]
+        [Route("Admin/RemoveRole")]
         public async Task RemoveARole(UserRolePairModel pairing)
         {
             var user = await _userManager.FindByIdAsync(pairing.UserId);
