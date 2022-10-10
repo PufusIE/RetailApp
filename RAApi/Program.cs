@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RAApi.Data;
+using RADataManagerLibrary.DataAccess;
+using RADataManagerLibrary.Internal.DataAccess;
 using Swashbuckle.Swagger;
 using System.Text;
 
@@ -16,10 +18,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    //adding roles
+    // Adding roles
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+// Personal Services
+builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddTransient<IProductData, ProductData>();
+builder.Services.AddTransient<IInventoryData, InventoryData>();
+builder.Services.AddTransient<ISaleData, SaleData>();
+builder.Services.AddTransient<IUserData, UserData>();
 
 // Configuration for taking tokens and make sure that they are valid
 builder.Services.AddAuthentication(o =>

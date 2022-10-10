@@ -13,7 +13,7 @@ namespace RADataManagerLibrary.Helpers
         {
             decimal output = 0;
 
-            //TODO - fix config
+            //TODO - fix config, remove static add as singleton
             string rateText = ConfigurationManager.AppSettings["taxRate"];
 
             bool IsValidTaxRate = Decimal.TryParse(rateText, out output);

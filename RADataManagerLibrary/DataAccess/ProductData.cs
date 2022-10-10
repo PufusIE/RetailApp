@@ -11,29 +11,25 @@ using System.Threading.Tasks;
 namespace RADataManagerLibrary.DataAccess
 {
     //For QCalls
-    public class ProductData
+    public class ProductData : IProductData
     {
-        private readonly IConfiguration _config;
+        private readonly ISqlDataAccess _sql;
 
-        public ProductData(IConfiguration config)
+        public ProductData(ISqlDataAccess sql)
         {
-            _config = config;
+            _sql = sql;
         }
         //Return all products
-        public List<ProductModel> GetAllProducts ()
+        public List<ProductModel> GetAllProducts()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);           
-
-            var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new {}, "RAData");
+            var output = _sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new { }, "RAData");
 
             return output;
         }
 
         public ProductModel GetById(int id)
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = id }, "RAData").FirstOrDefault();
+            var output = _sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = id }, "RAData").FirstOrDefault();
 
             return output;
         }

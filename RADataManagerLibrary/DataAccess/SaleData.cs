@@ -10,31 +10,28 @@ using System.Threading.Tasks;
 
 namespace RADataManagerLibrary.DataAccess
 {
-    public class SaleData
+    public class SaleData : ISaleData
     {
-        private readonly IConfiguration _config;
+        private readonly IProductData _productData;
+        private readonly ISqlDataAccess _sql;
 
-        public SaleData(IConfiguration config)
+        public SaleData(IProductData productData, ISqlDataAccess sql)
         {
-            _config = config;
+            _productData = productData;
+            _sql = sql;
         }
 
         //Save sale to DB
         public void SaveSale(SaleModel cartInfo, string cashierId)
         {
-            //TODO: Add DI to dll's
-
             //Filling in the sale detail models 
 
             //Model that is gonna be populated from foreach
             //And items from this list gonna be inserted into DB
             List<SaleDetailDBModel> saleDetails = new List<SaleDetailDBModel>();
-            
-            //For Qcalls
-            ProductData products = new ProductData(_config);
-            
+
             //Get the tax rate from appsettings
-            var taxRate = ConfigHelper.GetTaxRate()/100;
+            var taxRate = ConfigHelper.GetTaxRate() / 100;
 
             //sale.SaleDetails got populated from frontend cart
             foreach (var item in cartInfo.SaleDetails)
@@ -46,11 +43,11 @@ namespace RADataManagerLibrary.DataAccess
                 };
 
                 //Get information about this product from database Qcall
-                var productInfo = products.GetById(cartItem.ProductId);
+                var productInfo = _productData.GetById(cartItem.ProductId);
 
                 if (productInfo == null)
                 {
-                    throw new Exception($"The product Id of { cartItem.ProductId} was not found in the database");
+                    throw new Exception($"The product Id of {cartItem.ProductId} was not found in the database");
                 }
 
                 cartItem.PurchasePrice = (productInfo.RetailPrice * cartItem.Quantity);
@@ -74,44 +71,39 @@ namespace RADataManagerLibrary.DataAccess
             sale.Total = sale.Subtotal + sale.Tax;
 
             //Making a query
-            using (SqlDataAccess sql = new SqlDataAccess(_config))
+            try
             {
-                try
+                _sql.StartTransaction("RAData");
+
+                //Saving the sale                    
+                _sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
+
+                //Get id from the sale model
+                sale.Id = _sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_LookUp",
+                                                        new { sale.CashierId, sale.SaleDate })
+                                                        .FirstOrDefault();
+
+                //Finish filling in the sale detail models
+                foreach (var item in saleDetails)
                 {
-                    sql.StartTransaction("RAData");
+                    item.SaleId = sale.Id;
 
-                    //Saving the sale                    
-                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
-
-                    //Get id from the sale model
-                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_LookUp",
-                                                            new { sale.CashierId, sale.SaleDate })
-                                                            .FirstOrDefault();
-
-                    //Finish filling in the sale detail models
-                    foreach (var item in saleDetails)
-                    {
-                        item.SaleId = sale.Id;
-
-                        //Save the sale detail Model
-                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
-                    }
-
-                    sql.CommitTransaction();
+                    //Save the sale detail Model
+                    _sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
                 }
-                catch
-                {
-                    sql.RollbackTransaction();
-                    throw;
-                }
+
+                _sql.CommitTransaction();
+            }
+            catch
+            {
+                _sql.RollbackTransaction();
+                throw;
             }
         }
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "RAData");
+            var output = _sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "RAData");
 
             return output;
         }

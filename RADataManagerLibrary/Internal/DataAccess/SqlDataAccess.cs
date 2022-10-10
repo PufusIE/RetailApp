@@ -10,8 +10,10 @@ using System.Text;
 
 namespace RADataManagerLibrary.Internal.DataAccess
 {
-    public class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
+        private readonly IConfiguration _config;
+
         public SqlDataAccess(IConfiguration config)
         {
             _config = config;
@@ -64,13 +66,13 @@ namespace RADataManagerLibrary.Internal.DataAccess
         }
 
         public List<T> LoadDataInTransaction<T, U>(string storedProcedure, U parameters)
-        {          
+        {
             List<T> rows = _connection.Query<T>(storedProcedure,
                                                 parameters,
                                                 commandType: CommandType.StoredProcedure,
                                                 transaction: _transaction).ToList();
 
-            return rows;            
+            return rows;
         }
 
         public void SaveDataInTransaction<T>(string storedProcedure, T parameters)
@@ -81,8 +83,7 @@ namespace RADataManagerLibrary.Internal.DataAccess
                                 transaction: _transaction);
         }
 
-        private bool isClosed = false;
-        private readonly IConfiguration _config;
+        private bool isClosed = false;        
 
         //Two end of the transaction methods, closing the connection
         public void CommitTransaction()
@@ -110,7 +111,7 @@ namespace RADataManagerLibrary.Internal.DataAccess
                 {
                     CommitTransaction();
                 }
-                catch 
+                catch
                 {
                     //TODO - log this issue
                 }

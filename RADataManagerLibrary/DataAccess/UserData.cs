@@ -12,22 +12,19 @@ using Microsoft.Extensions.Configuration;
 
 namespace RADataManagerLibrary.DataAccess
 {
-    public class UserData
+    public class UserData : IUserData
     {
-        private readonly IConfiguration _config;
+        private readonly ISqlDataAccess _sql;
 
-        public UserData(IConfiguration config)
+        public UserData(ISqlDataAccess sql)
         {
-            _config = config;
+            _sql = sql;
         }
 
         //gets user by GUID id
         public List<UserModel> GetUserById(string Id)
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-            var p = new { Id };
-
-            var output = sql.LoadData<UserModel, dynamic>("dbo.spUserLookup", p, "RAData");
+            var output = _sql.LoadData<UserModel, dynamic>("dbo.spUserLookup", new { Id }, "RAData");
 
             return output;
         }

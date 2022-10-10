@@ -15,25 +15,25 @@ namespace RAApi.Controllers
     [ApiController]
     [Authorize]
     public class UserController : ControllerBase
-    {
-        private readonly IConfiguration _config;
+    {        
+        private readonly IUserData _userData;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(IConfiguration config, ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserController(IUserData userData, ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
-            _config = config;
+            _userData = userData;
             _context = context;
             _userManager = userManager;
         }
+
         //This is called using logged on user credentials, means you don't pass a value manually
         [HttpGet] // GET /api/User
         public UserModel GetById()
         {            
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            UserData data = new UserData(_config);
 
-            return data.GetUserById(userId).First();
+            return _userData.GetUserById(userId).First();
         }
 
         //Returns info about all registered users and their roles
