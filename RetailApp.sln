@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RADataManager", "RADataMana
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "RAData", "RAData\RAData.sqlproj", "{13E067F2-0234-4E95-8FEB-CDD14B4F6D81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RAWPFDesktopUI", "RAWPFDesktopUI\RAWPFDesktopUI.csproj", "{DCF68950-7554-49B1-AB97-47000C4E2BDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RAWPFDesktopUI", "RAWPFDesktopUI\RAWPFDesktopUI.csproj", "{DCF68950-7554-49B1-AB97-47000C4E2BDE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RADataManagerLibrary", "RADataManagerLibrary\RADataManagerLibrary.csproj", "{7A1D06F2-FA46-45DF-9009-45FF99FA747C}"
 EndProject
@@ -19,7 +19,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBase", "DataBase", "{A9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{B63C0496-77EF-4415-94B0-497075898D9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RAApi", "RAApi\RAApi.csproj", "{01C79D4C-8394-4C0B-9B90-2135E0A4F4A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RAApi", "RAApi\RAApi.csproj", "{01C79D4C-8394-4C0B-9B90-2135E0A4F4A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0EA358A-F541-4BE6-9E25-ECB525BEA9A1}"
+	ProjectSection(SolutionItems) = preProject
+		Roadmap.txt = Roadmap.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
