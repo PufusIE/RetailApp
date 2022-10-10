@@ -15,14 +15,14 @@ namespace RAWPFDesktopUI.ViewModels
     public class ShellViewModel : Conductor<object>, IHandle<LogOnEventModel>
     {
         private readonly IEventAggregator _events;
-        private readonly SalesViewModel _salesVM;
         private readonly ILoggedInUser _loggedInUser;
         private readonly IAPIHelper _apiHelper;
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel SalesVM, ILoggedInUser loggedInUser, IAPIHelper apiHelper)
+        public ShellViewModel(IEventAggregator events,
+                              ILoggedInUser loggedInUser,
+                              IAPIHelper apiHelper)
         {
             _events = events;
-            _salesVM = SalesVM;
             _loggedInUser = loggedInUser;
             _apiHelper = apiHelper;
             _events.SubscribeOnUIThread(this);
@@ -33,7 +33,7 @@ namespace RAWPFDesktopUI.ViewModels
 
         public async Task HandleAsync(LogOnEventModel message, CancellationToken cancellationToken)
         {
-            await ActivateItemAsync(_salesVM);
+            await ActivateItemAsync(IoC.Get<SalesViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
