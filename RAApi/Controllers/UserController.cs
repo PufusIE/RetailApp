@@ -19,12 +19,17 @@ namespace RAApi.Controllers
         private readonly IUserData _userData;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserData userData, ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserController(IUserData userData,
+                              ApplicationDbContext context,
+                              UserManager<IdentityUser> userManager,
+                              ILogger<UserController> logger)
         {
             _userData = userData;
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         //This is called using logged on user credentials, means you don't pass a value manually
@@ -72,7 +77,13 @@ namespace RAApi.Controllers
         [Route("Admin/AddRole")]
         public async Task AddARole(UserRolePairModel pairing)
         {
+            string LoggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var user = await _userManager.FindByIdAsync(pairing.UserId);
+
+            _logger.LogInformation("Admin {Admin} added user {User} to role {Role}",
+                LoggedInUserId, user.Id, pairing.RoleName);
+
             await _userManager.AddToRoleAsync(user, pairing.RoleName);
         }
 
@@ -81,7 +92,13 @@ namespace RAApi.Controllers
         [Route("Admin/RemoveRole")]
         public async Task RemoveARole(UserRolePairModel pairing)
         {
+            string LoggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var user = await _userManager.FindByIdAsync(pairing.UserId);
+
+            _logger.LogInformation("Admin {Admin} removed user {User} from role {Role}",
+                LoggedInUserId, user.Id, pairing.RoleName);
+
             await _userManager.RemoveFromRoleAsync(user, pairing.RoleName);
         }
     }
