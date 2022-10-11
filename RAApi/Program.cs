@@ -42,7 +42,7 @@ builder.Services.AddAuthentication(o =>
             jo.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("RabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbitRabbit")),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Secrets:SecurityKey"))),
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = true,
