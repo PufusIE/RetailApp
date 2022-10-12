@@ -54,7 +54,11 @@ SSMS
 JWT  
 Dapper  
 AutoMapper  
-
+  
+# Important info  
+I decided to move my project to Azure because I want to take advantage of CI/CD.   
+From now on I'm going to continue my development on Azure DevOps, the project is still accessible and you can find it here - https://dev.azure.com/mechenkoyaroslav/RetailApplication
+  
 # This project is still in development
 
 
