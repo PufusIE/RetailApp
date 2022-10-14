@@ -6,6 +6,7 @@ namespace RADataManagerLibrary.DataAccess
     public interface ISaleData
     {
         List<SaleReportModel> GetSaleReport();
+        decimal GetTaxRate();
         void SaveSale(SaleModel cartInfo, string cashierId);
     }
 }

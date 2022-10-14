@@ -35,5 +35,13 @@ namespace RAApi.Controllers
         {
            return _saleData.GetSaleReport();
         }
+
+        [Route("GetTaxRate")]
+        [HttpGet]
+        [AllowAnonymous]
+        public decimal GetTaxRate()
+        {
+            return _saleData.GetTaxRate();
+        }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
-using RADataManagerLibrary.Helpers;
 using RADataManagerLibrary.Internal.DataAccess;
 using RADataManagerLibrary.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,11 +15,31 @@ namespace RADataManagerLibrary.DataAccess
     {
         private readonly IProductData _productData;
         private readonly ISqlDataAccess _sql;
+        private readonly IConfiguration _config;
 
-        public SaleData(IProductData productData, ISqlDataAccess sql)
+        public SaleData(IProductData productData, ISqlDataAccess sql, IConfiguration config)
         {
             _productData = productData;
             _sql = sql;
+            _config = config;
+        }
+
+        public decimal GetTaxRate()
+        {
+            decimal output = 0;
+
+            string rateText = _config.GetValue<string>("TaxRate");
+
+            bool IsValidTaxRate = Decimal.TryParse(rateText, out output);
+
+            if (IsValidTaxRate == false)
+            {
+                throw new ConfigurationErrorsException("The tax rate is not set up properly");
+            }
+
+            output = output / 100;
+
+            return output;
         }
 
         //Save sale to DB
@@ -31,7 +52,7 @@ namespace RADataManagerLibrary.DataAccess
             List<SaleDetailDBModel> saleDetails = new List<SaleDetailDBModel>();
 
             //Get the tax rate from appsettings
-            var taxRate = ConfigHelper.GetTaxRate() / 100;
+            var taxRate = GetTaxRate();
 
             //sale.SaleDetails got populated from frontend cart
             foreach (var item in cartInfo.SaleDetails)
