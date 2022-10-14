@@ -50,12 +50,12 @@
             <TextBlock x:Name="SelectedUserName" Margin="0 0 0 10"/>
             <TextBlock Text="Current Roles"/>
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
-                <ListBox x:Name="UserRoles" />
-                <Button x:Name="RemoveSelectedRole" Content="Remove" Margin="5 0 0 0"/>
+                <ListBox x:Name="UserRoles" MinWidth="120"/>
+                <Button x:Name="RemoveSelectedRole" Content="Remove" Margin="5 0 0 0" MaxHeight="30"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <ComboBox x:Name="AvaliableRoles"/>
-                <Button x:Name="AddSelectedRole" Content="Add Role" Margin="5 0 0 0"/>
+                <ComboBox x:Name="AvaliableRoles" MinWidth="120"/>
+                <Button x:Name="AddSelectedRole" Content="Add Role" Margin="5 0 0 0" MaxHeight="30"/>
             </StackPanel>
         </StackPanel>
     </Grid>

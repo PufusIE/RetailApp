@@ -78,6 +78,7 @@ namespace RAWPFDesktopUI.ViewModels
             { 
                 _selectedUserRole = value; 
                 NotifyOfPropertyChange(() => SelectedUserRole);
+                NotifyOfPropertyChange(() => CanRemoveSelectedRole);                
             }
         }
                 
@@ -104,6 +105,7 @@ namespace RAWPFDesktopUI.ViewModels
             {
                 _selectedAvaliableRole = value; 
                 NotifyOfPropertyChange(() => SelectedAvaliableRole);
+                NotifyOfPropertyChange(() => CanAddSelectedRole);
             }
         }
 
@@ -165,6 +167,8 @@ namespace RAWPFDesktopUI.ViewModels
         {
             var roles = await _userEndpoint.GetAllRoles();
 
+            AvaliableRoles.Clear();
+
             foreach (var role in roles)
             {
                 if (!UserRoles.Contains(role.Value))
@@ -174,6 +178,21 @@ namespace RAWPFDesktopUI.ViewModels
             }
         }
 
+        public bool CanAddSelectedRole
+        {
+            get
+            {
+                if (SelectedUser is null || SelectedAvaliableRole is null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }        
+
         //Adding SelectedRole to user
         public async void AddSelectedRole()
         {
@@ -181,6 +200,21 @@ namespace RAWPFDesktopUI.ViewModels
 
             UserRoles.Add(SelectedAvaliableRole);
             AvaliableRoles.Remove(SelectedAvaliableRole);
+        }
+
+        public bool CanRemoveSelectedRole
+        {
+            get
+            {
+                if (SelectedUser is null || SelectedUserRole is null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
         }
 
         //removing selected role from user
