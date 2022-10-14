@@ -35,6 +35,7 @@ namespace RAWPFDesktopUI.ViewModels
         {
             await ActivateItemAsync(IoC.Get<SalesViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
+            NotifyOfPropertyChange(() => IsLoggedOut);
         }
 
         public void ExitApplication()
@@ -47,12 +48,18 @@ namespace RAWPFDesktopUI.ViewModels
             ActivateItemAsync(IoC.Get<UserDisplayViewModel>());
         }
 
-        public void LogOut()
+        public async Task LogOut()
         {
             _loggedInUser.ResetUserModel();
             _apiHelper.LogOffUser();
-            ActivateItemAsync(IoC.Get<LoginViewModel>());
+            await ActivateItemAsync(IoC.Get<LoginViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
+            NotifyOfPropertyChange(() => IsLoggedOut);
+        }
+
+        public async Task LogIn()
+        {
+            await ActivateItemAsync(IoC.Get<LoginViewModel>());
         }
 
         public bool IsLoggedIn
@@ -67,6 +74,14 @@ namespace RAWPFDesktopUI.ViewModels
                 }
 
                 return output;
+            }
+        }
+
+        public bool IsLoggedOut
+        {
+            get
+            {
+                return !IsLoggedIn;
             }
         }
     }
