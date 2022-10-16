@@ -80,13 +80,4 @@
   <ItemGroup>
     <RefactorLog Include="RAData.refactorlog" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RADataManagerLibrary\RADataManagerLibrary.csproj">
-      <Name>RADataManagerLibrary</Name>
-      <Project>{c1192606-7bda-4ff7-847e-585f42a53b52}</Project>
-      <Private>True</Private>
-      <IsModelAware>True</IsModelAware>
-      <GenerateSqlClrDdl>True</GenerateSqlClrDdl>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

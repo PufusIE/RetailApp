@@ -23,7 +23,7 @@ namespace RAApi.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Privacy()
+        public IActionResult Privacy()
         {   
             return View();
         }
