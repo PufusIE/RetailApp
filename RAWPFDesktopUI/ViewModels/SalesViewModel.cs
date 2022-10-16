@@ -169,7 +169,7 @@ namespace RAWPFDesktopUI.ViewModels
         public decimal CalculateTax()
         {
             decimal taxAmount = 0;
-            decimal taxRate = _configHelper.GetTaxRate()/100;
+            decimal taxRate = _configHelper.GetTaxRate();
 
             taxAmount = Cart
                 .Where(x => x.Product.IsTaxable)

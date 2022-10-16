@@ -14,7 +14,7 @@ namespace RAWPFDesktopUILibrary.Helpers
         {
             decimal output = 0;
 
-            string rateText = ConfigurationManager.AppSettings["taxRate"];
+            string rateText = ConfigurationManager.AppSettings["TaxRate"];
 
             bool IsValidTaxRate = Decimal.TryParse(rateText, out output);
 
@@ -22,6 +22,8 @@ namespace RAWPFDesktopUILibrary.Helpers
             {
                 throw new ConfigurationErrorsException("The tax rate is not set up properly");
             }
+
+            output = output / 100;
 
             return output;
         }
