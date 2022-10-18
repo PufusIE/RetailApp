@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Caliburn.Micro;
+using Microsoft.Extensions.Configuration;
 using RAWPFDesktopUI.Models;
 using RAWPFDesktopUILibrary.Api;
-using RAWPFDesktopUILibrary.Helpers;
 using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -21,16 +21,16 @@ namespace RAWPFDesktopUI.ViewModels
         private readonly IProductEndPoint _productEndPoint;
         private readonly ISaleEndpoint _saleEndpoint;
         private readonly IMapper _mapper;
-        private readonly IConfigHelper _configHelper;
+        private readonly IConfiguration _config;
         private readonly IWindowManager _window;
 
         public SalesViewModel(IProductEndPoint productEndPoint, ISaleEndpoint saleEndpoint,
-            IMapper mapper, IConfigHelper configHelper, IWindowManager window)
+            IMapper mapper, IConfiguration config, IWindowManager window)
         {
             _productEndPoint = productEndPoint;
             _saleEndpoint = saleEndpoint;
             _mapper = mapper;
-            _configHelper = configHelper;
+            _config = config;
             _window = window;
         }
 
@@ -169,7 +169,7 @@ namespace RAWPFDesktopUI.ViewModels
         public decimal CalculateTax()
         {
             decimal taxAmount = 0;
-            decimal taxRate = _configHelper.GetTaxRate();
+            decimal taxRate = _config.GetValue<decimal>("TaxRate")/100;
 
             taxAmount = Cart
                 .Where(x => x.Product.IsTaxable)

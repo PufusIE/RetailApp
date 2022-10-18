@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Caliburn.Micro;
+using Microsoft.Extensions.Configuration;
 using RAWPFDesktopUI.Helpers;
 using RAWPFDesktopUI.Models;
 using RAWPFDesktopUI.ViewModels;
 using RAWPFDesktopUILibrary.Api;
-using RAWPFDesktopUILibrary.Helpers;
 using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration.Internal;
+using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -45,6 +46,19 @@ namespace RAWPFDesktopUI
             return output;
         }
 
+        private IConfiguration AddConfiguration()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+#if DEBUG
+            builder.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+#else
+            builder.AddJsonFile("appsettings.Productions.json" optional: true, reloadOnChange: true);
+#endif
+            return builder.Build();
+        }
+
         //Dependency injection
         protected override void Configure()
         {
@@ -59,8 +73,9 @@ namespace RAWPFDesktopUI
                  .Singleton<IWindowManager, WindowManager>()
                  .Singleton<IEventAggregator, EventAggregator>()
                  .Singleton<IAPIHelper, APIHelper>()
-                 .Singleton<ILoggedInUser, LoggedInUser>()
-                 .Singleton<IConfigHelper, ConfigHelper>();
+                 .Singleton<ILoggedInUser, LoggedInUser>();
+
+            _container.RegisterInstance(typeof(IConfiguration), "IConfiguration", AddConfiguration());
 
             //Reflection
             GetType().Assembly.GetTypes()

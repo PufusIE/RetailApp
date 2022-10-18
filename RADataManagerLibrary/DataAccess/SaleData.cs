@@ -34,7 +34,7 @@ namespace RADataManagerLibrary.DataAccess
 
             if (IsValidTaxRate == false)
             {
-                throw new ConfigurationErrorsException("The tax rate is not set up properly");
+                throw new TaskCanceledException("The tax rate is not set up properly");
             }
 
             output = output / 100;

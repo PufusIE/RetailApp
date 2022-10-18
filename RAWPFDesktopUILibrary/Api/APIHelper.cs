@@ -1,4 +1,5 @@
-﻿using RAWPFDesktopUILibrary.Models;
+﻿using Microsoft.Extensions.Configuration;
+using RAWPFDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,23 +15,25 @@ namespace RAWPFDesktopUILibrary.Api
     {
         private HttpClient _apiClient;
         private readonly ILoggedInUser _loggedInUser;
+        private readonly IConfiguration _config;
 
         public HttpClient ApiClient
         {
             get { return _apiClient; }            
         }
 
-        public APIHelper(HttpClient apiC, ILoggedInUser loggedInUser)
+        public APIHelper(HttpClient apiC, ILoggedInUser loggedInUser, IConfiguration config)
         {
             _apiClient = apiC;
             _loggedInUser = loggedInUser;
+            _config = config;
             InitializeClient();
         }
 
         private void InitializeClient()
         {
             //pulling server from app.config
-            string api = ConfigurationManager.AppSettings["api"];
+            string api = _config.GetValue<string>("api");
 
             //configuring our API Client
             _apiClient = new HttpClient();
