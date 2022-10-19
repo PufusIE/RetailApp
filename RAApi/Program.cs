@@ -13,6 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Adding Cors with policy that accepts everything (for debuging purposes) ( cross origin req. from one url to another )
+builder.Services.AddCors(policy =>
+{
+    policy.AddPolicy("OpenCorsPolicy", options =>
+    options.AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod());
+});
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -75,6 +85,7 @@ else
 }
 
 app.UseHttpsRedirection();
+app.UseCors("OpenCorsPolicy");
 app.UseStaticFiles();
 
 app.UseRouting();

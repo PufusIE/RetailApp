@@ -24,6 +24,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Roadmap.txt = Roadmap.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApps", "WebApps", "{E95508B4-21F1-4EA8-8F99-611221A88912}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portal", "Portal\Portal.csproj", "{0365D61B-7CF1-4E64-AC9E-26DA9FAD502C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,10 @@ Global
 		{01C79D4C-8394-4C0B-9B90-2135E0A4F4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01C79D4C-8394-4C0B-9B90-2135E0A4F4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01C79D4C-8394-4C0B-9B90-2135E0A4F4A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0365D61B-7CF1-4E64-AC9E-26DA9FAD502C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0365D61B-7CF1-4E64-AC9E-26DA9FAD502C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0365D61B-7CF1-4E64-AC9E-26DA9FAD502C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0365D61B-7CF1-4E64-AC9E-26DA9FAD502C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +70,7 @@ Global
 		{7A1D06F2-FA46-45DF-9009-45FF99FA747C} = {BF263B97-8ED9-4CE6-BEAC-DBA488993ED5}
 		{F1E8D63C-731E-4658-9474-E20B43E14C2D} = {B63C0496-77EF-4415-94B0-497075898D9B}
 		{01C79D4C-8394-4C0B-9B90-2135E0A4F4A6} = {BF263B97-8ED9-4CE6-BEAC-DBA488993ED5}
+		{0365D61B-7CF1-4E64-AC9E-26DA9FAD502C} = {E95508B4-21F1-4EA8-8F99-611221A88912}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {08B47A6C-1B00-4156-963E-F9018AA06C6F}
