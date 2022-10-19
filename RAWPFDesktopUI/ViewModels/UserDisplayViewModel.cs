@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using RAWPFDesktopUI.EventModels;
 using RAWPFDesktopUI.Models;
 using RAWPFDesktopUILibrary.Api;
 using RAWPFDesktopUILibrary.Models;
@@ -18,12 +19,16 @@ namespace RAWPFDesktopUI.ViewModels
         private readonly StatusInfoViewModel _status;
         private readonly IWindowManager _window;
         private readonly IUserEndpoint _userEndpoint;
+        private readonly IEventAggregator _events;
+        private readonly ILoggedInUser _loggedInUser;        
 
-        public UserDisplayViewModel(StatusInfoViewModel status, IWindowManager window, IUserEndpoint userEndpoint)
+        public UserDisplayViewModel(StatusInfoViewModel status, IWindowManager window, IUserEndpoint userEndpoint, IEventAggregator events, ILoggedInUser loggedInUser)
         {
             _status = status;
             _window = window;
             _userEndpoint = userEndpoint;
+            _events = events;
+            _loggedInUser = loggedInUser;            
         }
 
         //All the users that got populated from user controller api endpoint
@@ -132,11 +137,7 @@ namespace RAWPFDesktopUI.ViewModels
             }
             catch (Exception ex)
             {
-                //Setting setup for status window
-                dynamic settings = new ExpandoObject();
-                settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                settings.ResizeMode = ResizeMode.NoResize;
-                settings.Title = "System Error";
+                var settings = GetPopupSettings();
 
                 var statusInfo = IoC.Get<StatusInfoViewModel>();
 
@@ -154,6 +155,17 @@ namespace RAWPFDesktopUI.ViewModels
                 await TryCloseAsync();
             }
         }
+
+        //Setting setup for status window
+        private dynamic GetPopupSettings()
+        {
+            dynamic settings = new ExpandoObject();
+            settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            settings.ResizeMode = ResizeMode.NoResize;
+            settings.Title = "System Error";
+
+            return settings;
+        } 
 
         //Populating list of users
         private async Task LoadUsers()
@@ -200,6 +212,8 @@ namespace RAWPFDesktopUI.ViewModels
 
             UserRoles.Add(SelectedAvaliableRole);
             AvaliableRoles.Remove(SelectedAvaliableRole);
+
+            await UpdateCurrentUser();
         }
 
         public bool CanRemoveSelectedRole
@@ -224,8 +238,23 @@ namespace RAWPFDesktopUI.ViewModels
 
             AvaliableRoles.Add(SelectedUserRole);
             UserRoles.Remove(SelectedUserRole);
+
+            await UpdateCurrentUser();
         }
 
-        //Upgrade to .Net Core
+        public async Task UpdateCurrentUser()
+        {
+            if (_loggedInUser.EmailAddress == SelectedUser.Email)
+            {               
+                await _events.PublishOnUIThreadAsync(new OwnRoleUpdateEventModel());
+
+                var settings = GetPopupSettings();
+
+                var statusInfo = IoC.Get<StatusInfoViewModel>();
+
+                statusInfo.UpdateMessageInfo("Own Role Update", "You updated your role, please log in again.");
+                _window.ShowDialogAsync(statusInfo, null, settings);
+            }
+        }
     }
 }

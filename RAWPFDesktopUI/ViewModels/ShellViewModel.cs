@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace RAWPFDesktopUI.ViewModels
 {
     //Conductor - allows to display one form on our ShellView
-    public class ShellViewModel : Conductor<object>, IHandle<LogOnEventModel>
+    public class ShellViewModel : Conductor<object>, IHandle<LogOnEventModel>, IHandle<OwnRoleUpdateEventModel> 
     {
         private readonly IEventAggregator _events;
         private readonly ILoggedInUser _loggedInUser;
@@ -43,10 +43,15 @@ namespace RAWPFDesktopUI.ViewModels
             TryCloseAsync();
         }
 
-        public void UserManagment()
+        public async Task UserManagment()
         {
-            ActivateItemAsync(IoC.Get<UserDisplayViewModel>());
+            await ActivateItemAsync(IoC.Get<UserDisplayViewModel>());
         }
+
+        public async Task SalePage()
+        {            
+            await ActivateItemAsync(IoC.Get<SalesViewModel>());
+        }        
 
         public async Task LogOut()
         {
@@ -60,6 +65,11 @@ namespace RAWPFDesktopUI.ViewModels
         public async Task LogIn()
         {
             await ActivateItemAsync(IoC.Get<LoginViewModel>());
+        }
+
+        public async Task HandleAsync(OwnRoleUpdateEventModel message, CancellationToken cancellationToken)
+        {
+            await LogOut();
         }
 
         public bool IsLoggedIn

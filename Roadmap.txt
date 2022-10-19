@@ -1,19 +1,17 @@
 
 Application Ideas:
 	* Actually interact with the inventory
-	* Move the API to Azure
-	* CI/CD process
-	* Deploy the Desktop App to Blob Storage for download
-	* Introduce a web-based inventory control system (Blazor? Possibly client side work?)
-	* Web-based reporting
 	* A Xamarion Forms app for a mobile register
+	* Web-based reporting
+	* Blazor app
+	* Microservices
+	* Introduce a web-based inventory control system (Blazor?)
 
 Phase 2 Roadmap
- 1. Take advantage of .Net Core 
- 2. Set up a simple task board in Azure DevOps
- 3. CI/CD with Azure DevOps (move source code to Azure DevOps?)
- 4. Move the API to Azure
- 5. Move the database to Azure SQL
- 6. Deploy the desktop app to Azure Blob storage (file system)
- 7. Web-based inventory control system
-  
+ 1. Hook up inventory so it really increments/decrements
+ 2. Administrarive portal (web-based)
+ 3. Use Blazor WebAssembly PWA (pohone look on phones, web look on descktops)
+ 4. Dockerize backend (API, etc.)
+ 5. Breack off a piece as a microservice
+
+   
