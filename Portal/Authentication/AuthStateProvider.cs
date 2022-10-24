@@ -5,9 +5,10 @@ using System.Security.Claims;
 
 namespace Portal.Authentication
 {
-    public class AuthStateProvider : AuthenticationStateProvider
+    // Checks if user logged in or not right from the beginning 
+    public class AuthStateProvider : AuthenticationStateProvider 
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient ;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationState _anonymous;
 
@@ -15,11 +16,12 @@ namespace Portal.Authentication
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
+            _anonymous = new AuthenticationState(new ClaimsPrincipal( new ClaimsIdentity()));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            // Gets token from local storage
+            // Tries to get the token from local storage(cash)
             var token = await _localStorage.GetItemAsync<string>("authToken");
 
             if (string.IsNullOrWhiteSpace(token))
@@ -36,6 +38,7 @@ namespace Portal.Authentication
                     new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwtAuthType")));
         }
 
+        // Trigger Authentication event that changes the login status of the current user
         public void NotifyAuthentication(string token)
         {
             var authenticatedUser = new ClaimsPrincipal(
@@ -43,12 +46,14 @@ namespace Portal.Authentication
 
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
 
-            // Notifies when user logs in
+            // New authentication state
             NotifyAuthenticationStateChanged(authState);
         }
 
+        // Notify that the current user is logged out
         public void NotifyLogout()
         {
+            // Resets the state of the current authenticated user
             var authState = Task.FromResult(_anonymous);
             NotifyAuthenticationStateChanged(authState);
         }

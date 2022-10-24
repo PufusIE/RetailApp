@@ -1,5 +1,9 @@
-﻿@page "/fetchdata"
+﻿// This is the test learning page that will be deleted
+
+
+@page "/fetchdata"
 @inject HttpClient Http
+@attribute [Authorize(Roles ="Admin")]
 
 <PageTitle>Weather forecast</PageTitle>
 

@@ -1,8 +1,19 @@
-﻿@page "/counter"
+﻿// This is the test learning page that will be deleted
+
+@page "/counter"
 
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
+
+<AuthorizeView Roles="Manager">
+    <Authorized>
+        <h4>The user (@context.User.FindFirst(ClaimTypes.Name).Value) is authorized and is Manager.</h4>
+    </Authorized>
+    <NotAuthorized>
+        <h1>The user is not authorized.</h1>
+    </NotAuthorized>
+</AuthorizeView>
 
 <p role="status">Current count: @currentCount</p>
 

@@ -20,7 +20,7 @@ namespace Portal.Authentication
             _localStorage = localStorage;
         }
 
-        public async Task<AuthenticatedUserModel> Login(AuthenticationUserModel userForAuthentication)
+        public async Task<AuthenticatedUserModel> LoginAsync(AuthenticationUserModel userForAuthentication)
         {
             // Populate what's going to be sent to /token endpoint
             var data = new TokenUserModel
@@ -32,7 +32,7 @@ namespace Portal.Authentication
 
             // Calling /token
             var authResult = await _httpClient.PostAsJsonAsync("https://localhost:7054/token", data);
-            // Reading response (token and username)
+            // Reading response (token)
             var authContent = await authResult.Content.ReadAsStringAsync();
 
             if (authResult.IsSuccessStatusCode == false)
@@ -44,21 +44,24 @@ namespace Portal.Authentication
             var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent);
 
             // Cashing token to user's machine 
-            await _localStorage.SetItemAsync("authToken", result.Access_Token);
+            await _localStorage.SetItemAsync("authToken", result.access_Token);
 
-            // Casting authstate provider from microsoft with own child class and notifying authentication
-            ((AuthStateProvider)_authProvider).NotifyAuthentication(result.Access_Token);
+            // Casting authstate provider from microsoft with own child class and changing the status of the user to be logged in
+            ((AuthStateProvider)_authProvider).NotifyAuthentication(result.access_Token);
 
             // Sends this token with each future api request 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Access_Token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.access_Token);
 
             return result;
         }
 
-        public async Task Logout()
+        public async Task LogoutAsync()
         {
+            // Clearing headers 
             _httpClient.DefaultRequestHeaders.Authorization = null;
+            // Removing token from cash
             await _localStorage.RemoveItemAsync("authToken");
+            // Notifying logout even
             ((AuthStateProvider)_authProvider).NotifyLogout();
         }
     }

@@ -9,7 +9,9 @@ namespace Portal.Authentication
         public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var claims = new List<Claim>();
-            var payload = jwt.Split('.')[1]; // geeting only payload, no header info, no verification./validation info
+
+            // Geeting only payload, no header info, no verification./validation info
+            var payload = jwt.Split('.')[1]; 
 
             //Converts jwt to byte array
             var jsonBytes = ParseBase64WithoutPadding(payload);

@@ -56,6 +56,7 @@ namespace RAApi.Controllers
                         where ur.UserId == user.Id
                         select new { ur.UserId, ur.RoleId, r.Name };
 
+            // Populating list of claims with user's info
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
@@ -64,20 +65,23 @@ namespace RAApi.Controllers
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString())
             };
 
+            // Adding roles of the users 
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role.Name));
             }
 
+            // Getting singing key from appsettings.Production.json, that is being replaced during ci/cd build
             var key = _config.GetValue<string>("Secrets:SecurityKey");
 
+            // Signing the token
             var token = new JwtSecurityToken(
                 new JwtHeader(
                     new SigningCredentials(
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                         SecurityAlgorithms.HmacSha256)),
                 new JwtPayload(claims));
-
+                        
             var output = new
             {
                 Access_Token = new JwtSecurityTokenHandler().WriteToken(token),
