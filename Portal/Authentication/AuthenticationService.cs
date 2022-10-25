@@ -5,64 +5,68 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace Portal.Authentication
+namespace Portal.Authentication;
+
+public class AuthenticationService : IAuthenticationService
 {
-    public class AuthenticationService : IAuthenticationService
+    private readonly HttpClient _httpClient;
+    private readonly AuthenticationStateProvider _authProvider;
+    private readonly ILocalStorageService _localStorage;
+    private readonly IConfiguration _config;
+    private string tokenStorageLocationKey;
+
+    public AuthenticationService(HttpClient httpClient, AuthenticationStateProvider authProvider, ILocalStorageService localStorage, IConfiguration config)
     {
-        private readonly HttpClient _httpClient;
-        private readonly AuthenticationStateProvider _authProvider;
-        private readonly ILocalStorageService _localStorage;
+        _httpClient = httpClient;
+        _authProvider = authProvider;
+        _localStorage = localStorage;
+        _config = config;
+        tokenStorageLocationKey = _config["authTokenStorageKey"];
+    }
 
-        public AuthenticationService(HttpClient httpClient, AuthenticationStateProvider authProvider, ILocalStorageService localStorage)
+    public async Task<AuthenticatedUserModel> LoginAsync(AuthenticationUserModel userForAuthentication)
+    {
+        // Populate what's going to be sent to /token endpoint
+        var data = new TokenUserModel
         {
-            _httpClient = httpClient;
-            _authProvider = authProvider;
-            _localStorage = localStorage;
+            Username = userForAuthentication.Email,
+            Password = userForAuthentication.Password,
+            Grant_Type = "password"
+        };
+
+        // Calling /token
+        var tokenEndpoint = _config["api"] + _config["tokenEndpoint"];
+        var authResult = await _httpClient.PostAsJsonAsync(tokenEndpoint, data);
+        // Reading response (token)
+        var authContent = await authResult.Content.ReadAsStringAsync();
+
+        if (authResult.IsSuccessStatusCode == false)
+        {
+            return null;
         }
 
-        public async Task<AuthenticatedUserModel> LoginAsync(AuthenticationUserModel userForAuthentication)
-        {
-            // Populate what's going to be sent to /token endpoint
-            var data = new TokenUserModel
-            {
-                Username = userForAuthentication.Email,
-                Password = userForAuthentication.Password,
-                Grant_Type = "password"
-            };
+        // Converting response from json to our model
+        var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent);
 
-            // Calling /token
-            var authResult = await _httpClient.PostAsJsonAsync("https://localhost:7054/token", data);
-            // Reading response (token)
-            var authContent = await authResult.Content.ReadAsStringAsync();
+        // Cashing token to user's machine 
+        await _localStorage.SetItemAsync(tokenStorageLocationKey, result.access_Token);
 
-            if (authResult.IsSuccessStatusCode == false)
-            {
-                return null;
-            }
+        // Casting authstate provider from microsoft with own child class and changing the status of the user to be logged in
+        ((AuthStateProvider)_authProvider).NotifyAuthentication(result.access_Token);
 
-            // Converting response from json to our model
-            var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent);
+        // Sends this token with each future api request 
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.access_Token);
 
-            // Cashing token to user's machine 
-            await _localStorage.SetItemAsync("authToken", result.access_Token);
+        return result;
+    }
 
-            // Casting authstate provider from microsoft with own child class and changing the status of the user to be logged in
-            ((AuthStateProvider)_authProvider).NotifyAuthentication(result.access_Token);
-
-            // Sends this token with each future api request 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.access_Token);
-
-            return result;
-        }
-
-        public async Task LogoutAsync()
-        {
-            // Clearing headers 
-            _httpClient.DefaultRequestHeaders.Authorization = null;
-            // Removing token from cash
-            await _localStorage.RemoveItemAsync("authToken");
-            // Notifying logout even
-            ((AuthStateProvider)_authProvider).NotifyLogout();
-        }
+    public async Task LogoutAsync()
+    {
+        // Clearing headers 
+        _httpClient.DefaultRequestHeaders.Authorization = null;
+        // Removing token from cash
+        await _localStorage.RemoveItemAsync(tokenStorageLocationKey);
+        // Notifying logout even
+        ((AuthStateProvider)_authProvider).NotifyLogout();
     }
 }
