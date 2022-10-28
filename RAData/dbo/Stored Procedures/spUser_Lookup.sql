@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spUserLookup]
+﻿CREATE PROCEDURE [dbo].[spUser_Lookup]
 	@Id nvarchar(128) 
 as	
 begin
@@ -7,4 +7,5 @@ begin
 	select [Id], [FirstName], [LastName], [EmailAddress], [CreateDate]
 	from dbo.[User] u
 	where u.Id = @Id
+
 end

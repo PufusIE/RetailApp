@@ -100,7 +100,7 @@ namespace RADataManagerLibrary.DataAccess
                 _sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
 
                 //Get id from the sale model
-                sale.Id = _sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_LookUp",
+                sale.Id = _sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_Lookup",
                                                         new { sale.CashierId, sale.SaleDate })
                                                         .FirstOrDefault();
 
