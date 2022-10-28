@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Portal;
 using Portal.Authentication;
+using RAWPFDesktopUILibrary.Api;
+using RAWPFDesktopUILibrary.Models;
 using System.Net;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -14,6 +16,13 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+
+// Library dependencies
+builder.Services.AddSingleton<IAPIHelper, APIHelper>();
+builder.Services.AddSingleton<ILoggedInUserModel, LoggedInUserModel>();
+builder.Services.AddTransient<IProductEndPoint, ProductEndPoint>();
+builder.Services.AddTransient<IUserEndpoint, UserEndpoint>();
+builder.Services.AddTransient<ISaleEndpoint, SaleEndpoint>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

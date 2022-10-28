@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RAWPFDesktopUILibrary.Models
 {
-    public class LoggedInUser : ILoggedInUser
+    public class LoggedInUserModel : ILoggedInUserModel
     {
         public string Token { get; set; }
         public string Id { get; set; }

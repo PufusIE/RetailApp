@@ -20,9 +20,9 @@ namespace RAWPFDesktopUI.ViewModels
         private readonly IWindowManager _window;
         private readonly IUserEndpoint _userEndpoint;
         private readonly IEventAggregator _events;
-        private readonly ILoggedInUser _loggedInUser;        
+        private readonly ILoggedInUserModel _loggedInUser;        
 
-        public UserDisplayViewModel(StatusInfoViewModel status, IWindowManager window, IUserEndpoint userEndpoint, IEventAggregator events, ILoggedInUser loggedInUser)
+        public UserDisplayViewModel(StatusInfoViewModel status, IWindowManager window, IUserEndpoint userEndpoint, IEventAggregator events, ILoggedInUserModel loggedInUser)
         {
             _status = status;
             _window = window;

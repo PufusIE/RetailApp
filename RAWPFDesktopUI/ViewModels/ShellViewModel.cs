@@ -15,11 +15,11 @@ namespace RAWPFDesktopUI.ViewModels
     public class ShellViewModel : Conductor<object>, IHandle<LogOnEventModel>, IHandle<OwnRoleUpdateEventModel> 
     {
         private readonly IEventAggregator _events;
-        private readonly ILoggedInUser _loggedInUser;
+        private readonly ILoggedInUserModel _loggedInUser;
         private readonly IAPIHelper _apiHelper;
 
         public ShellViewModel(IEventAggregator events,
-                              ILoggedInUser loggedInUser,
+                              ILoggedInUserModel loggedInUser,
                               IAPIHelper apiHelper)
         {
             _events = events;

@@ -14,7 +14,7 @@ namespace RAWPFDesktopUILibrary.Api
     public class APIHelper : IAPIHelper
     {
         private HttpClient _apiClient;
-        private readonly ILoggedInUser _loggedInUser;
+        private readonly ILoggedInUserModel _loggedInUser;
         private readonly IConfiguration _config;
 
         public HttpClient ApiClient
@@ -22,7 +22,7 @@ namespace RAWPFDesktopUILibrary.Api
             get { return _apiClient; }            
         }
 
-        public APIHelper(HttpClient apiC, ILoggedInUser loggedInUser, IConfiguration config)
+        public APIHelper(HttpClient apiC, ILoggedInUserModel loggedInUser, IConfiguration config)
         {
             _apiClient = apiC;
             _loggedInUser = loggedInUser;
@@ -83,7 +83,7 @@ namespace RAWPFDesktopUILibrary.Api
                 //reading respons from api call and populating AuthenticatedUser model
                 if (response.IsSuccessStatusCode == true)
                 {
-                    var result = await response.Content.ReadAsAsync<LoggedInUser>();
+                    var result = await response.Content.ReadAsAsync<LoggedInUserModel>();
                     //Could be swapped with automapper in the future
                     _loggedInUser.Token = token;
                     _loggedInUser.CreateDate = result.CreateDate;

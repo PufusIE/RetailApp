@@ -70,10 +70,10 @@ namespace RAWPFDesktopUI
                 .PerRequest<ISaleEndpoint, SaleEndpoint>();
 
             _container
-                 .Singleton<IWindowManager, WindowManager>()
-                 .Singleton<IEventAggregator, EventAggregator>()
+                 .Singleton<IWindowManager, WindowManager>()    // For caliburn micro
+                 .Singleton<IEventAggregator, EventAggregator>()    // For caliburn micro
                  .Singleton<IAPIHelper, APIHelper>()
-                 .Singleton<ILoggedInUser, LoggedInUser>();
+                 .Singleton<ILoggedInUserModel, LoggedInUserModel>();
 
             _container.RegisterInstance(typeof(IConfiguration), "IConfiguration", AddConfiguration());
 

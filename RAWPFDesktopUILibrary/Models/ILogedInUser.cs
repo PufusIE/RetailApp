@@ -2,7 +2,7 @@
 
 namespace RAWPFDesktopUILibrary.Models
 {
-    public interface ILoggedInUser
+    public interface ILoggedInUserModel
     {
         DateTime CreateDate { get; set; }
         string EmailAddress { get; set; }
