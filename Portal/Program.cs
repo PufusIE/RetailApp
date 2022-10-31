@@ -17,7 +17,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
 
-// Library dependencies
+// Library dependencies TODO: create method in library that adds all the dependencies
 builder.Services.AddSingleton<IAPIHelper, APIHelper>();
 builder.Services.AddSingleton<ILoggedInUserModel, LoggedInUserModel>();
 builder.Services.AddTransient<IProductEndPoint, ProductEndPoint>();

@@ -33,6 +33,25 @@ namespace RAWPFDesktopUILibrary.Api
             }
         }
 
+        public async Task CreateUser(CreateUserModel user)
+        {
+            var data = new
+            {
+                user.FirstName,
+                user.LastName,
+                user.EmailAddress,
+                user.Password
+            };
+
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("/api/User/Register", data))
+            {
+                if (response.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
+
         public async Task<Dictionary<string, string>> GetAllRoles()
         {
             using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("/api/User/Admin/GetAllRoles/"))

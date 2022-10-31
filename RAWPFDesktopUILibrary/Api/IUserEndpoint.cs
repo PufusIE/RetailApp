@@ -10,5 +10,6 @@ namespace RAWPFDesktopUILibrary.Api
         Task<Dictionary<string, string>> GetAllRoles();
         Task AddUserToRole(string userId, string roleName);
         Task RemoveUserFromRole(string userId, string roleName);
+        Task CreateUser(CreateUserModel user);
     }
 }
