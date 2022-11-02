@@ -2,8 +2,18 @@
 @inject NavigationManager NavManager
 
 <EditForm Model="model" OnValidSubmit="ExecuteLogin">
-    
-    <div class="row">
+         
+    <div class="row justify-content-center align-items-center">
+
+        @if (showAuthError)
+        {
+            <div class="col-auto">
+                <div class="text-danger">
+                    @authErrorText
+                </div>
+            </div>
+        }
+
         <div class="col-auto">
             <label for="email" class="visually-hidden">Email</label>
             <InputText id="email" class="form-control" @bind-Value="model.Email" placeholder="Email Address"/>
