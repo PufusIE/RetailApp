@@ -13,7 +13,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly AuthenticationStateProvider _authProvider;
     private readonly ILocalStorageService _localStorage;
     private readonly IConfiguration _config;
-    private string tokenStorageLocationKey;
+    private readonly string _tokenStorageLocationKey;
 
     public AuthenticationService(HttpClient httpClient, AuthenticationStateProvider authProvider, ILocalStorageService localStorage, IConfiguration config)
     {
@@ -21,7 +21,7 @@ public class AuthenticationService : IAuthenticationService
         _authProvider = authProvider;
         _localStorage = localStorage;
         _config = config;
-        tokenStorageLocationKey = _config["authTokenStorageKey"];
+        _tokenStorageLocationKey = _config["authTokenStorageKey"];
     }
 
     public async Task<AuthenticatedUserModel> LoginAsync(AuthenticationUserModel userForAuthentication)
@@ -49,7 +49,7 @@ public class AuthenticationService : IAuthenticationService
         var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent);
 
         // Cashing token to user's machine 
-        await _localStorage.SetItemAsync(tokenStorageLocationKey, result.access_Token);
+        await _localStorage.SetItemAsync(_tokenStorageLocationKey, result.access_Token);
 
         // Casting authstate provider from microsoft with own child class and changing the status of the user to be logged in
         ((AuthStateProvider)_authProvider).NotifyAuthentication(result.access_Token);
@@ -65,7 +65,7 @@ public class AuthenticationService : IAuthenticationService
         // Clearing headers 
         _httpClient.DefaultRequestHeaders.Authorization = null;
         // Removing token from cash
-        await _localStorage.RemoveItemAsync(tokenStorageLocationKey);
+        await _localStorage.RemoveItemAsync(_tokenStorageLocationKey);
         // Notifying logout even
         ((AuthStateProvider)_authProvider).NotifyLogout();
     }

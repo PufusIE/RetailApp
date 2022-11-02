@@ -6,7 +6,6 @@ using Microsoft.OpenApi.Models;
 using RAApi.Data;
 using RADataManagerLibrary.DataAccess;
 using RADataManagerLibrary.Internal.DataAccess;
-using Swashbuckle.Swagger;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
