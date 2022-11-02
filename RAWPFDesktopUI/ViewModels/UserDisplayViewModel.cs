@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Newtonsoft.Json.Linq;
 using RAWPFDesktopUI.EventModels;
 using RAWPFDesktopUI.Models;
 using RAWPFDesktopUILibrary.Api;
@@ -53,9 +54,9 @@ namespace RAWPFDesktopUI.ViewModels
             set 
             { 
                 _selectedUser = value;
-                SelectedUserName = value.Email;                
-                UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());                
-                NotifyOfPropertyChange(() => SelectedUser); 
+                SelectedUserName = value.Email;
+                UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
+                // TODO: make loadroles property into method 
                 LoadRoles();
             }
         }
@@ -88,7 +89,7 @@ namespace RAWPFDesktopUI.ViewModels
         }
                 
         //All the avaliabel roles that got populated from LoadRoles() method
-        private BindingList<string> _avaliableRoles = new BindingList<string>();
+        private BindingList<string> _avaliableRoles = new();
 
         public BindingList<string> AvaliableRoles
         {
@@ -115,7 +116,7 @@ namespace RAWPFDesktopUI.ViewModels
         }
 
         //Roles of selected user
-        private BindingList<string> _userRoles = new BindingList<string>();
+        private BindingList<string> _userRoles = new();
 
         public BindingList<string> UserRoles
         {
@@ -208,11 +209,21 @@ namespace RAWPFDesktopUI.ViewModels
         //Adding SelectedRole to user
         public async void AddSelectedRole()
         {
+            // Assigning user to role in database
             await _userEndpoint.AddUserToRole(SelectedUser.Id, SelectedAvaliableRole);
 
+            // Adding selected role to list of user's roles 
             UserRoles.Add(SelectedAvaliableRole);
+
+            // Updating list of all users to visually display new user's role 
+            Users.Where(x => x.Email == SelectedUser.Email).First().Roles.Add(Guid.NewGuid().ToString(), SelectedAvaliableRole);
+            // Work around the limitation of caliburn micro
+            Users = new BindingList<UserModel>(Users);
+            
+            // Remove selected role from list of avaliable roles 
             AvaliableRoles.Remove(SelectedAvaliableRole);
 
+            // Check for the case when you update your own role
             await UpdateCurrentUser();
         }
 
@@ -237,6 +248,13 @@ namespace RAWPFDesktopUI.ViewModels
             await _userEndpoint.RemoveUserFromRole(SelectedUser.Id, SelectedUserRole);
 
             AvaliableRoles.Add(SelectedUserRole);
+
+            // Updating list of all users to visually display new user's roles 
+            Users.Where(x => x.Email == SelectedUser.Email).First().Roles.Remove(
+                Users.Where(x => x.Email == SelectedUser.Email).First().Roles.Where(x => x.Value == SelectedUserRole).First().Key);
+            // Work around the limitation of caliburn micro
+            Users = new BindingList<UserModel>(Users);
+
             UserRoles.Remove(SelectedUserRole);
 
             await UpdateCurrentUser();
