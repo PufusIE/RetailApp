@@ -1,18 +1,28 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <Authorizing>
-                <text>Please wait, we are authorizing you.</text>
-                <!-- add a page? or at least a text when user is not authorized)-- >
-            </Authorizing>
-        </AuthorizeRouteView>       
-    </Found>
-    <NotFound>
-       <CascadingAuthenticationState>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-       </CascadingAuthenticationState>
-    </NotFound>
-</Router>
+﻿<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <text>Please wait, we are authorizing you.</text>
+                    <!-- add a page? or at least a text when user is not authorized)-- >
+                                </Authorizing>
+                                <NotAuthorized>
+                                    <h1>Sorry, You Do Not Have Access</h1>
+                                    <p>
+                                        The page or component you are trying to reach requires you to 
+                                        have more premissions than you currently do. Pelase contact hte 
+                                        administrator if you thing you have reached this page in error.
+                                    </P>
+                                </NotAuthorized>
+                            </AuthorizeRouteView>
+                        </Found>
+                        <NotFound>
+                           <CascadingAuthenticationState>
+                                <PageTitle>Not found</PageTitle>
+                                <LayoutView Layout="@typeof(MainLayout)">
+                                    <p role="alert">Sorry, there's nothing at this address.</p>
+                                </LayoutView>
+                           </CascadingAuthenticationState>
+                        </NotFound>
+                    </Router>
+</CascadingAuthenticationState>
