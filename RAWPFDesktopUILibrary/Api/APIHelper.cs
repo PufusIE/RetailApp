@@ -36,8 +36,10 @@ namespace RAWPFDesktopUILibrary.Api
             string api = _config.GetValue<string>("api");
 
             //configuring our API Client
-            _apiClient = new HttpClient();
-            _apiClient.BaseAddress = new Uri(api);
+            _apiClient = new HttpClient
+            {
+                BaseAddress = new Uri(api)
+            };
             _apiClient.DefaultRequestHeaders.Accept.Clear();
             _apiClient.DefaultRequestHeaders.Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));

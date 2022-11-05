@@ -22,7 +22,7 @@ namespace RAWPFDesktopUI
     internal class Bootstraper : BootstrapperBase
     {
         // DI container
-        private SimpleContainer _container = new SimpleContainer();
+        private readonly SimpleContainer _container = new();
         public Bootstraper()
         {
             Initialize();

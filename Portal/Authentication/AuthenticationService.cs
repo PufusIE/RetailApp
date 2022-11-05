@@ -26,7 +26,6 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<AuthenticatedUserModel> LoginAsync(AuthenticationUserModel userForAuthentication)
     {
-        // Populate what's going to be sent to /token endpoint
         var data = new TokenUserModel
         {
             Username = userForAuthentication.Email,
@@ -34,10 +33,8 @@ public class AuthenticationService : IAuthenticationService
             Grant_Type = "password"
         };
 
-        // Calling /token
         var tokenEndpoint = _config["api"] + _config["tokenEndpoint"];
-        var authResult = await _httpClient.PostAsJsonAsync(tokenEndpoint, data);
-        // Reading response (token)
+        var authResult = await _httpClient.PostAsJsonAsync(tokenEndpoint, data);        
         var authContent = await authResult.Content.ReadAsStringAsync();
 
         if (authResult.IsSuccessStatusCode == false)
@@ -52,21 +49,16 @@ public class AuthenticationService : IAuthenticationService
         await _localStorage.SetItemAsync(_tokenStorageLocationKey, result.access_Token);
 
         // Casting authstate provider from microsoft with own child class and changing the status of the user to be logged in
-        ((AuthStateProvider)_authProvider).NotifyAuthentication(result.access_Token);
+        await ((AuthStateProvider)_authProvider).NotifyAuthentication(result.access_Token);
+                
 
-        // Sends this token with each future api request 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.access_Token);
 
         return result;
     }
 
     public async Task LogoutAsync()
-    {
-        // Clearing headers 
-        _httpClient.DefaultRequestHeaders.Authorization = null;
-        // Removing token from cash
-        await _localStorage.RemoveItemAsync(_tokenStorageLocationKey);
-        // Notifying logout even
-        ((AuthStateProvider)_authProvider).NotifyLogout();
+    {    
+        await ((AuthStateProvider)_authProvider).NotifyLogout();
     }
 }
