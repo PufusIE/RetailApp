@@ -1,5 +1,6 @@
 ﻿@page "/products"
 @inject IProductEndPoint ProductEndpoint
+@inject IConfiguration Config;
 @attribute [Authorize]
 
 <h3>Products</h3>
@@ -13,41 +14,50 @@
     }
     else
     {
-            <div class="row">
-                @foreach (ProductModel product in products)
-                {
-                    <div class="col-xl-4 col-lg-6 mb-3">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-12">
-                                    <a href="">
-                                        <img src="https://dummyimage.com/1200x900/000/fff" class="img-fluid" alt="Placeholder image" />
-                                    </a>
-                                    <p class="my-2 text-justify">
-                                        @product.Description
-                                    </p>
-                                    <p class="mb-1">
-                                        <strong>Quantity:</strong> @product.QuantityInStock
-                                    </p>
-                                </div>
+        <div class="row">
+            @foreach (ProductModel product in products)
+            {
+                <div class="col-xl-4 col-lg-6 mb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <a href="">
+                                    @if (string.IsNullOrWhiteSpace(product.ProductImage))
+                                    {
+                                    <img src="https://dummyimage.com/1200x900/000000/ffffff&text=Coming+Soon" class="img-fluid" alt="Placeholder image" />
+                                    }
+                                    else
+                                    {
+                                    <img src="@($"{api}{product.ProductImage}")" class="img-fluid" alt="@product.ProductName" />
+                                    }
+                                </a>
+                                <p class="my-2 text-justify">
+                                    @product.Description
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Quantity:</strong> @product.QuantityInStock
+                                </p>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="h5  mb-3">@product.ProductName - € @product.RetailPrice</p>
-                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="h5  mb-3">@product.ProductName - € @product.RetailPrice</p>
                             </div>
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
+        </div>
     }   
 </div>
 
 @code {
     private List<ProductModel> products;
+    private string api;
 
     protected override async Task OnInitializedAsync()
     {
+        api = Config.GetValue<string>("api");
         products = await ProductEndpoint.GetAll();
     }
 }
