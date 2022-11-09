@@ -1,6 +1,8 @@
 ﻿@page "/products"
 @inject IProductEndPoint ProductEndpoint
-@inject IConfiguration Config;
+@inject IConfiguration config
+@inject ILocalStorageService localStorage
+@inject ILogger logger
 @attribute [Authorize]
 
 <h3>Products</h3>
@@ -54,10 +56,35 @@
 @code {
     private List<ProductModel> products;
     private string api;
+    private const string ProductListName = "productList";
+    private const string ProductCacheDate = "productCacheDate";
 
     protected override async Task OnInitializedAsync()
     {
-        api = Config.GetValue<string>("api");
-        products = await ProductEndpoint.GetAll();
+        api = config.GetValue<string>("api");
+
+        products = await localStorage.GetItemAsync<List<ProductModel>>(ProductListName);
+        DateTime? cacheDate = await localStorage.GetItemAsync<DateTime?>(ProductCacheDate);
+        double totalMinutes = 0;
+
+        if (cacheDate is not null)
+        {
+            totalMinutes = DateTime.UtcNow.Subtract((DateTime)cacheDate).TotalMinutes;
+        }
+
+        if (products is null || cacheDate is null || totalMinutes > 15)
+        {
+            try
+            {
+                products = await ProductEndpoint.GetAll();
+                await localStorage.SetItemAsync(ProductListName, products);
+                await localStorage.SetItemAsync(ProductCacheDate, DateTime.UtcNow);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex.Message);
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }
