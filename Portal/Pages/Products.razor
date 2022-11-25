@@ -2,7 +2,6 @@
 @inject IProductEndPoint ProductEndpoint
 @inject IConfiguration config
 @inject ILocalStorageService localStorage
-@inject ILogger logger
 @attribute [Authorize]
 
 <h3>Products</h3>
@@ -81,8 +80,7 @@
                 await localStorage.SetItemAsync(ProductCacheDate, DateTime.UtcNow);
             }
             catch (Exception ex)
-            {
-                logger.Log(LogLevel.Error, ex.Message);
+            {                    
                 Console.WriteLine(ex.Message);
             }
         }

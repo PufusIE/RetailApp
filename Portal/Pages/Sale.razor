@@ -1,0 +1,41 @@
+﻿@page "/sales"
+@inject ISaleEndpoint SaleEndpoint
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Sale</h3>
+
+<div>
+    <table>
+        <caption>Last Sale: </caption>         
+      <thead>
+        <th>Email Address</th>
+        <th>Name</th>
+        <th>Sale Date</th>
+        <th>Subtotal</th>
+        <th>Tax</th>
+        <th>Total</th>
+      </thead>
+      <tbody>           
+            @foreach (var sale in sales)
+            {
+                <tr>
+                    <th>@sale.EmailAddress</th>
+                    <td>@sale.FirstName</td>
+                    <td>@sale.SaleDate</td>                  
+                    <td>@sale.Subtotal</td>
+                    <td>@sale.Tax</td>
+                    <td>@sale.Total</td>
+                 </tr>
+            }                 
+      </tbody>
+    </table> 
+</div>
+
+@code {
+    private List<SaleReportModel> sales = new();
+    protected override async Task OnInitializedAsync()
+    {
+        sales = await SaleEndpoint.GetAllSales();
+        Console.WriteLine(sales.Count);
+    }
+}

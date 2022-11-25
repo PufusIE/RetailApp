@@ -31,5 +31,21 @@ namespace RAWPFDesktopUILibrary.Api
                 }
             }
         }
+
+        public async Task<List<SaleReportModel>> GetAllSales()
+        {
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("/api/Sale/GetSalesReport"))
+            {
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var result = await response.Content.ReadAsAsync<List<SaleReportModel>>();
+                    return result;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
     }
 }
